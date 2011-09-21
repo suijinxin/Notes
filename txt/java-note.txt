@@ -1,0 +1,8 @@
+*---Java编程环境的设置--- 2007-01-12
+**---java_home（JDK的安装路径）
+例如：c:\j2sdk1.4.2
+**---classpath（Java类文件的路径）
+一般配置如下：
+.;%java_home%\lib\dt.jar;%java_home%\lib\tools.jar
+**---path（命令的搜索路径）
+在原来的基础上增加：%java_home%\bin

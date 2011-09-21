@@ -1,0 +1,138 @@
+	SuiJinXin Ubuntu Notes		-*- outline -*-
+*---右上角有线网络图标不可用--2011年08月23日 19:30:57 
+故障原因为NM的托管被false了
+修改：
+sudo vim /etc/NetworkManager/NetworkManager.conf
+将
+managed=false 修改为：
+managed=true
+*---修改时区和时间---2011年06月 4日 18:18:23 
+执行
+$sudo tzselect
+
+按照提示进行选择时区
+$sudo cp /usr/share/zoneinfo/Asia/ShangHai  /etc/localtime
+
+执行
+$sudo ntpdate time.edu.cn
+(或者cn.pool.ntp.org是位于中国的公共NTP服务器，用来同步你的时间)
+时间
+$sudo date -s 20110604
+
+*---X window下修改屏幕分辨率
+在系统--首选项---主菜单,
+调出主菜单的窗口 ,在程序---其他 右侧窗口中勾选"显示器和显卡"
+再在应用程序---其他--显示器型号和显卡窗口中修改
+调出显示器型号和显卡设置窗口中修改。
+*---Ubuntu下安装codeblocks
+1）在 CodeBlocks 官网 http://www.codeblocks.org/downloads/ 下载 CodeBlocks 的 Ubuntu 版本并解压缩。
+
+2）按以下顺序安装各软件包
+
+libcodeblocks0_8.02-0ubuntu1_i386.deb
+codeblocks-dev_8.02-0ubuntu1_i386.deb
+libwxsmithlib0-dev_8.02-0ubuntu1_i386.deb
+libwxsmithlib0_8.02-0ubuntu1_i386.deb
+codeblocks_8.02-0ubuntu1_i386.deb
+codeblocks-contrib_8.02-0ubuntu1_i386.deb
+codeblocks-dbg_8.02-0ubuntu1_i386.deb
+
+3）安装完成后在应用程序－编程下即可启动。
+*--- Ubuntu下安装GTK+ ---2008年10月10日 | 10:56:39
+apt-get install build-essential #这将安装gcc/g++/gdb/make 等基本编程工具
+apt-get install gnome-core-devel #这将安装 libgtk2.0-dev libglib2.0-dev 等开发相关的库文件
+apt-get install pkg-config #用于在编译GTK程序时自动找出头文件及库文件位置
+apt-get install devhelp #这将安装 devhelp GTK文档查看程序
+apt-get install libglib2.0-doc libgtk2.0-doc #这将安装 gtk/glib 的API参考手册及其它帮助文档
+apt-get install glade libglade2-dev #这将安装基于GTK的界面GTK是开发Gnome窗口的c/c++语言图形库。
+apt-get install libgtk2.0*, gtk+2.0所需的所有文件统通下载安装完毕。
+应用程序编译命令：gcc test.c `pkg-config --cflags --libs gtk+-2.0`，编译通过，运行正常。 
+
+pkg-config是一个用来管理包的程序，在控制台输入 pkg-config --cflags --libs gtk+-2.0，可以发现输出的文本包括了gcc编译gtk+2.0所需要的所有选项（头文件目录和库文件）。 
+
+这里有一点需要注意， gcc test.c `pkg-config --cflags --libs gtk+-2.0`, pkg-config --cflags --libs gtk+-2.0两侧的引号并不是真正的引号，而是键盘数字件那一行，最左边的那个字符。如果错用了单引号，gcc无法使用 pkg-config --cflags --libs gtk+-2.0产生的文本作为编译选项。构造程序。
+*---从其他语言转换到简体中文---2008年10月10日 | 08:52:42
+    点击最上面菜单 的 系统 -> 系统管理 -> 语言支持 [如果是英文菜单则是 Syetem -> Administration -> 
+    Language Support] 在列表中的 Chinese 条目 打勾。 同时将默认语言修改为 Chinese(中国) ，按确定关闭设置程序。
+    如果你设置的是非中文环境，但需要系统提供中文支持，那么请按照以下情况执行命令： 
+    apt-get install language-pack-zh                #ubuntu
+    sudo fontconfig-voodoo -f -s zh_CN
+**---fontconfig-voodoo命令解析
+英文解释：
+We could have better fonts for some languages (e.g. Arabic). We need to evaluate what fonts are available and under what license we can use them. (See OpenFonts).We should also make the "fontconfig-voodoo" mechanism available via the interface (e.g. via a advanced tab). This way people can optimize their font settings for e.g. Chinese fonts even if they use a English system by default.
+
+这个命令其实就是根据你指定的参数,将/usr/share/language-selector/fontconfig下面的文件链接到/etc/fonts/下面，比如 
+
+代码: 
+fontconfig-voodoo -S zh_CN 
+就等于 
+代码: 
+sudo ln -sf /usr/share/language-selector/fontconfig/zh_CN /etc/fonts/language-selector.conf 
+
+再看看/etc/fonts/fonts.conf有这么一段 
+代码: 
+<!-- Load local ubuntu-specific language custom file --> <include ignore_missing="yes">language-selector.conf</include> 
+fontconfig就会将选择语言的配置读取到了，自然ShanHeiSun就发挥作用了
+*---Ubuntu中文环境配置备忘---2008年10月 9日 | 21:29:46
+**---准备字体
+拷贝相关字体到/usr/share/fonts目录下的新建文件夹msfonts,然后运行命令:
+sudo fc-cache -f -v 更新字体缓存
+**---配置Ubuntu locales
+很简单，重新生成所有的locale配置，其实网上的资料只是漏掉了--purge参数而已
+第一步：配置自己想要的locale。普遍推荐的方法是拷贝所有ubuntu支持的locale到自己的配置文件里，然后编辑。
+cp /usr/share/i18n/SUPPORTED /var/lib/locales/supported.d/local
+vi /var/lib/locales/supported.d/local，用dd命令删啊删，只留下en_系列和zh_系列, 或者其他你要的locale
+rm /var/lib/locales/supported.d/en
+rm /var/lib/locales/supported.d/zh 这两个文件跟local一样功能，也可以把en系列写在en文件里，zh系列写在zh文件里，分类方便而已。
+我既然都写在local里，这两个就用不着了。
+
+第二步：重新生成locale支持文件
+locale-gen --purge
+这一步会将/usr/lib/locale/里面的locale支持文件删掉，重新生成。如果设置的locale没有生成过，或者设置的时候拼写错误，在这个目录找不到同名的支持文件就会提示No such file了。
+**---中文环境配置
+在编辑器里，将/etc/environment内容修改如下(默认使用中文界面):
+
+LANGUAGE="zh_CN:zh:en_US:en"
+LC_CTYPE=zh_CN.UTF-8
+LANG=zh_CN.UTF-8
+GST_ID3_TAG_ENCODING=GBK
+如果需要使用英文界面，将内容修改如下:
+LANGUAGE="en_US:en"
+LC_CTYPE=zh_CN.UTF-8
+LANG=en_GB.UTF-8
+GST_ID3_TAG_ENCODING=GBK
+保存，关闭编辑器
+
+然后：系统设置－－外观设置外观 ， 系统设置－－advanced－－登录管理器，设置登录字体、样式
+**---fcitx配置
+安装fcitx的时候，先卸载系统默认安装的scim。 
+sudo apt-get -s remove scim #模拟卸载scim，看有那些关联的软件包会被卸载 
+sudo apt-get remove scim # 卸载scim. 
+
+安装fcitx： 
+1.sudo apt-get install fcitx #安装fcitx. 
+2.sudo im-switch -s fcitx #将fcitx设置为默认输入法. 
+最后重启x-window 
+**---fcitx问题及解决方案
+安装fcitx以后，出现了输入法状态条界面，但是上面都是小方框： 
+编辑~/.fcitx/config（注意字符集必须选gb2312，否则显示乱码），改一下里面的显示字体（比如改成WenQuanYi Bitmap Song） 
+改完后还是不能使用，可以出现输入法状态条，但是ctrl-空格不能激活，最后在修改/etc/X11/Xsession.d/95xinput-fcitx为以下内容就一切OK了 （如果没有，就新建一个）。 
+
+export LC_ALL=zh_CN.UTF-8 
+export XMODIFIERS=@im=fcitx; 
+export GTK_IM_MODULE=fcitx; 
+fcitx &
+
+注意：给这个文件加上可执行权限。
+**---更新前对系统做备份 
+代码:
+tar zcvfp backup.tgz --exclude=/proc --exclude=/lost+found --exclude=/backup.tgz --exclude=/mnt --exclude=/media --exclude=/sys / 
+
+执行以下操作 
+
+代码:
+sudo su 
+cd / 
+tar zxvfp backup.tgz -C /
+
+漫长的20分钟过去后，重启，正常

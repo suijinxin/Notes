@@ -1,0 +1,24 @@
+				SuiJinXin basic knowledge of Web_Server_config Notes	-*- outline -*-
+* Tomcat7.0添加用户 --2011年04月 8日 15:57:10 
+<tomcat-users>
+<role rolename="admin-gui,manager-gui">
+<user name="root" password="root" roles="admin-gui,manager-gui" />
+<!--
+  NOTE:  By default, no user is included in the "manager-gui" role required
+  to operate the "/manager/html" web application.  If you wish to use this app,
+  you must define such a user - the username and password are arbitrary.
+-->
+<!--
+  NOTE:  The sample user and role entries below are wrapped in a comment
+  and thus are ignored when reading this file. Do not forget to remove
+  <!.. ..> that surrounds them.
+-->
+<!--
+  <role rolename="tomcat"/>
+  <role rolename="role1"/>
+  <user username="tomcat" password="tomcat" roles="tomcat"/>
+  <user username="both" password="tomcat" roles="tomcat,role1"/>
+  <user username="role1" password="tomcat" roles="role1"/>
+-->
+</tomcat-users>
+

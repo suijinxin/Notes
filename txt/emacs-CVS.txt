@@ -1,0 +1,35 @@
+* Emacs安装步骤：
+**  下载所需文件
+***    MinGW, Msys (MinGW-3.1.0-1.exe, MSYS-1.0.10.exe) 
+			 http://mingw.sourceforge.net/download.shtml 
+***		CVS for win32 (cvs-1-11-21.zip) 
+			http://ftp.gnu.org/non-gnu/cvs/binary/stable/x86-woe/ 
+			或 cvsnt (也包含 cvs.exe) 
+***		GnuWin32, Image libs, Texinfo. 
+			http://sourceforge.net/projects/gnuwin32 
+			http://sourceforge.net/project/showfiles.php?group_id=23617 
+			JPEG lib&bin (jpeg-6b-4-bin.zip, jpeg-6b-4-lib.zip) 
+			PNG lib&bin (libpng-1.2.8-bin.zip, libpng-1.2.8-lib.zip) 
+			GIF src&bin (libungif-4.1.0b1-bin.zip, libungif-4.1.0b1-src.zip) 
+			TIFF lib&bin (tiff-3.7.2-bin.zip, tiff-3.7.2-lib.zip) 
+			XPM lib&src&bin (xpm-3.5.1-1-bin.zip, xpm-3.5.1-1-lib.zip, xpm-3.5.1-1-src.zip) 
+			Zlib bin&src (zlib-1.2.2-bin.zip, zlib-1.2.3-src.zip) 
+			Texinfo bin (texinfo-4.8-bin.zip, libiconv-1.9.2-1-bin.zip, libintl-0.14.4-bin.zip) 
+**  安装及设置所需要的环境
+		安装 MinGW (D:/free_ware/MinGW) 
+		安装 Msys (D:/free_ware/msys) 
+		复制 CVS (copy cvs.exe to C:/WINDOWS or C:/WINNT)
+		在D:/free_ware目录下建立include和bin两个文件家，include用来存放各个图形包的头文件，分别如下：
+		 
+
+**  建立一个共有文件夹
+		比如这个文件夹建立的地址为d:\free_ware,下面在新建立两个文件夹\include和\bin，include文件夹放上面各个图形源码包提取出来的头文件，分别如下：
+		    
+* Emacs-CVS源
+Emacs教育网CVS（参数-kb有利于在windows下编译）
+cvs -z3 -d:pserver:anonymous@ftp.tsinghua.edu.cn/cvsroot co -kb -r emacs-unicode-2 -d emacs cvs.savannah.gnu.org/emacs/emacs
+cvs -z3 -d:pserver:anonymous@ftp.tsinghua.edu.cn/cvsroot co -kb -r -d emacs cvs.savannah.gnu.org/emacs/emacs
+Emacs公共网CVS
+cvs -z3 -d:pserver:anonymous@cvs.savannah.gnu.org:/sources/emacs co emacs
+cvs -z3 -d:pserver:anonymous@cvs.sv.gnu.org:/sources/emacs co -r emacs-unicode-2 emacs
+

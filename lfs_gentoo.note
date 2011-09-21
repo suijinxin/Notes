@@ -1,0 +1,208 @@
+----------SuiJinXin LFS and Gentoo Notes		-*- outline -*-
+* Gentoo升级更新过程中出现blocked的情况 --2011年04月23日 14:04:54 
+  block最常见的是已安装软件的block要安装的软件
+  如果是这种情况，emerge -C 已安装的即可
+* Gentoo干净卸载软件 --2010年12月19日 20:09:24 
+emerge -C foo
+emerge --depclean -p
+emerge --depclean
+
+ * Depclean may break link level dependencies. Thus, it is
+ * recommended to use a tool such as `revdep-rebuild` (from
+ * app-portage/gentoolkit) in order to detect such breakage.
+ *
+ * Always study the list of packages to be cleaned for any obvious
+ * mistakes. Packages that are part of the world set will always
+ * be kept.  They can be manually added to this set with
+ * `emerge --noreplace <atom>`.  Packages that are listed in
+ * package.provided (see portage(5)) will be removed by
+ * depclean, even if they are part of the world set.
+ *
+ * As a safety measure, depclean will not remove any packages
+ * unless *all* required dependencies have been resolved.  As a
+ * consequence, it is often necessary to run `emerge --update
+ * --newuse --deep @world` prior to depclean.
+3
+
+* Gentoo如何升级系统 --2010年12月11日 16:20:25 
+      对于使用Portage 2.1版本的用户，请先安装app-portage/gentoolkit（使用emerge gentoolkit即可，已安装可跳过），用：
+emerge --sync && emerge -DNauv world && emerge --depclean -av && revdep-rebuild。
+sys-apps/portage-2.2的用户可以使用：
+emerge @preserved-rebuild
+来代替revdep-rebuild，就不用安装app-portage/gentoolkit了。 
+** 当系统升级不过的时候
+    一般可以跳过，用emerge --resume --skipfirst。可能等到下次emerge --sync之后，问题就解决了。你也可以到Bugzilla提交Bug，让官方的开发人员协助你解决。如果自己解决也可以到Bugzilla贴出。现在Portage的测试分支版本已经提供--keep-going选项，代替了原来手动--resume --skipfirst的情况。
+
+* Gentoo 产看已安装的包  --2010年12月11日 13:58:09 
+先emerge portage-utils  ---为了使用qlist这个工具。
+用下面的命令就可以查看已经安装的包
+qlist -Iv
+或者
+qlist -Iv | less
+* Gentoo Linux本地化指南 --2010年12月11日 13:04:50 
+** 时区
+你需要选择时区让系统知道你的地理位置，以保持正确的时间。
+在/usr/share/zoneinfo中查找你的时区。然后在/etc/conf.d/clock中设置时区。
+请忽略/usr/share/zoneinfo/Etc/GMT*时区，因为它们的名字并不表示所指的地区。比如，GMT-8实际上是GMT+8。
+eg1:设置时区信息：
+# ls /usr/share/zoneinfo（假设你要使用布鲁塞尔）
+（首先复制正确的地区到localtime）
+# cp /usr/share/zoneinfo/Asia/Harbin /etc/localtime（现在指定时区）
+# nano -w /etc/conf.d/clock
+TIMEZONE="Asia/Harbin"
+# date
+Sat Dec 11 13:25:09 CST 2010
+注意1: 确保代表时区的英文缩写（本案例中为"CST"）正是你的地区。
+注意2: 你可以做一个用户级的设置，在shell的rc文件（如bash的.bash_profile）中将TZ变量的值设为/usr/share/zoneinfo下的任何东西。本案例中TZ="Asia/Harbin"。
+** 硬件时钟
+Gentoo Linux安装过程中，大多数情况下硬件时钟都是被设成UTC（或GMT，格林威治标准时间），而时区则定为实际的本地时间。如果出于某种原因，你需要将硬件时钟设为非UTC，那么你就要编辑/etc/conf.d/clock，将CLOCK的值由UTC改为local。
+eg2:本地时钟vs.格林威治时钟
+（推荐：）
+CLOCK="UTC"
+（或者：）
+CLOCK="local"
+
+*** UTC:
+协调世界时，又称世界统一时间，世界标准时间，国际协调时间，简称UTC。它从英文“Coordinated Universal Time”／法文“Temps Universel Cordonné”而来。
+中国大陆、中国香港、中国澳门、中国台湾、蒙古国、新加坡、马来西亚、菲律宾、西澳大利亚州的时间与UTC的时差均为+8，也就是UTC+8。
+*** CST:
+CST同时代表了下面4个时区。 　　
+CST Central Standard Time (USA) UT-6:00 　　
+CST Central Standard Time (Australia) UT 9:30 　　
+CST China Standard Time UT 8:00 　　
+CST Cuba Standard Time UT-4:00 　　
+同时还有相关： 　　
+EDT - Eastern Daylight Time 东部夏令时间 　　
+CDT - Central Daylight Time 中部夏令时间
+*** CET:
+中欧时区
+** Locale系统
+*** locale是什么？
+一份Locale是一组信息的集合，大多数程序利用它来确定特定的国家和语言设置。这些locale以及它们包含的数据是系统库的一部分，可以在大多数系统中的/usr/share/locale目录下找到。locale的名称通常命名为ab_CD的形式，其中ab是两个（或三个）字母的语言代号（在ISO-639中指定），CD是两个字母的国家代号（在ISO-3166中指定）。一些变量常常附加在locale名称的后面，例如en_GB.UTF-8或de_DE@euro。更多关于locale及相关的文章请考察维基百科。
+*** locale环境变量
+Locale的设置保存在环境变量中。典型情况下设置在/etc/env.d/02locale（系统全局设置）和~/.bashrc（特定用户设置）文件中。这些变量分别决定locale各方面的设置，下面的表格给出了具体说明。所有变量都会取一个前述ab_CD格式的locale名称作为值。
+
+
+
+
+* emerge升级过程 --2010年12月11日 12:39:59 
+
+emerge --sync    				  获取最新的软件列表
+emerge -uDNpv world				  查看什么可升级
+emerge -uDNv world				  升级系统
+emerge -p --depclean			  查看需要删除什么
+emerge --depclean				  删除无依赖的包
+revdep-rebuild					  确保二进制依赖的一致性
+dispatch-conf					  合并配置文件，确保配置文件的正确性
+
+
+* 控制portage的行为 --2010年10月17日 16:40:03 
+参考网址：http://man.ddvip.com/linux/gentoo/install_man/hb_part2_chap4.html
+下载的安装程序源代码保存目录：/usr/portage/distfiles
+* 在Gentoo中使用代理服务器
+** 如果代理传输HTTP数据）
+# export http_proxy="http://proxy.gentoo.org:8080"
+** 如果代理传输FTP数据
+# export ftp_proxy="ftp://proxy.gentoo.org:8080"
+** 如果代理传输RSYNC数据）
+# export RSYNC_PROXY="proxy.gentoo.org:8080"
+* 在Gentoo中使用因License被mask的包 ---2010年07月22日 08:33:13 
+** 问题提示：
+www-plugins/adobe-flash-10.1.53.64 (masked by: AdobeFlash-10.1 license(s))
+A copy of the 'AdobeFlash-10.1' license is located at '/usr/portage/licenses/AdobeFlash-10.1'.
+** 解决方案：
+在/etc/portage/package.license里面添加下面的一行即可： 
+www-plugins/adobe-flash   AdobeFlash-10.1
+* Gentoo下phpmyadmin的配置
+** 需要绝密的短语密码(blowfish_secret)的解决
+编辑/var/www/localhost/htdocs/phpmyadmin/config.inc.php
+
+搜索blowfish_secret更改$cfg['blowfish_secret'] = '';
+为$cfg['blowfish_secret'] = '1234';其中1234自定义
+** ERROR 1045 (28000): Access denied for user ‘root’@'localhost’ (using password: YSE)
+*** 重新更改密码：
+#mysql -u root mysql -p
+ mysql> UPDATE user SET Password=PASSWORD('newpassword') where USER='root';
+ mysql> FLUSH PRIVILEGES;
+ mysql> quit
+*** 重新启动服务
+/etc/init.d/mysql restart
+#mysql -uroot -p
+Enter password:
+
+mysql>
+  Over 
+* Gentoo 下bash-completion的配置 ---2010年01月26日 07:51:09 
+** 安装软件
+# emerge -av bash-completion
+# emerge -av gentoo-bashcomp 注释：为了给 portage 相关命令(比如 emerge、equery、revdep-rebuild 等) 加上 tab 补齐功能
+** 配置.bashrc
+
+complete -c sudo
+[[ -f /etc/profile.d/bash-completion.sh ]] && source /etc/profile.d/bash-completion.sh
+
+#complete -c sudo是为了sudo后面的命令也能补全。
+
+** bash-completion 的启用，eselect bashcomp 和 bashcomp-config 两个命令是等价的
+eg：
+开启 portage 相关命令的 bash-completion 功能
+$ eselect bashcomp enable gentoo
+$ bashcomp-config enable gentoo
+
+开启 eselect 自己的 bash-completion 功能
+$ eselect bashcomp enable eselect
+$ bashcomp-config enable eselect
+
+需要关闭的时候，直接 disable 即可。
+查看有哪一些命令支持 bash-completion ，可以用下面的命令
+$ eselect bashcomp list
+$ bashcomp-config list
+
+** 刷新 env 
+# env-update && source /etc/profile && source ~/.bashrc
+*---LFS安装心得---2008年05月24日 | 18:15:57
+**---构建前准备工作
+***---创建新分区及文件系统
+    就是为LFS系统准备一个磁盘分区，步骤是创建一个新的磁盘分区并在这个分区上创建文件系统，然后挂载它。
+    LFS系统使用的交换分区和宿主使用的交换分区可以是一个。
+    记住LFS分区的名称（比如hda2）,交换分区的名称也要记住，可以用fdisk -l查看，这些分区的名称以后在/etc/fstab中要用到
+    
+    创建系统的命令：（ext3）
+    mke2fs -jv /dev/<xxx>     <xxx>----->hda2
+    如果有交换分区，可以用下列命令格式化：
+    mkswap /dev/<yyy>
+***---挂载新分区
+    1、假设挂载在/mnt/lfs上,并指定LFS环境变量：
+    export LFS=/mnt/lfs
+    2、创建挂载点，并且挂载LFS文件系统：
+    mkdir -pv $LFS
+    mount -v -t ext3 /dev/<xxx> $LFS
+    如果LFS分了多个区（比如一个分区用于/目录，一个用于/home目录），可以使用以下命令挂载：
+    mkdir -pv $LFS
+    mount -v -t ext3 /dev/<xxx> $LFS
+    mkdir -v $LFS/usr
+    mount -v -t ext3 /dev/<yyy> $LFS/home
+    如果使用交换分区，那么可以用以下命令激活：
+    /sbin/swapon -v /dev/<zzz>
+***---软件包和补丁
+    软件包和补丁需要一个访问方便的地方存储，还需要一个工作目录来解压和编译软件包。$LFS=/sources既可以存储它们，也可以成为工作目录。
+    1、创建目录：（root权限）
+    mkdir -v $LFS/sources
+    2、把目录设置为可写和sticky模式：
+    chmod -v a+wt $LFS/sources
+
+    sticky:一个目录有多个用户有可写权限，但是这个目录中的文件只有其所有者才能删除。
+***---关于环境变量$LFS
+    环境变量 LFS 的使用贯穿全书。保持 LFS 总是已定义是很重要的，它应该被设置为 LFS 分区的挂载点。用下面的命令检查它的设置是否恰当：
+    echo $LFS
+    请确认输出的是 LFS 分区挂载点的路径，如果您遵循我们的例子，则应该是 /mnt/lfs 。如果输出结果不正确，用下述命令设置它：
+    export LFS=/mnt/lfs
+    设置这个环境变量的好处是您以后可以按照原样输入形如 mkdir $LFS/tools 的命令，当 shell 处理这个命令行的时候，会自动用"/mnt/lfs"(或者该环境变量所设定的值)替换"$LFS" 。当您离开然后重新进入当前工作环境的时候(像 su 到 root 或者其他用户)，不要忘记检查 $LFS 是否设置正确。
+***---创建$LFS/tools文件
+    在第五章《构建临时编译环境》中编译的所有程序都将安装到 $LFS/tools 目录下，以便与第六章《安装系统基础软件》中编译的程序隔离开来。这里编译的程序只是临时使用的工具，不是最终 LFS 系统的组成部分。把这些程序放到一个单独的目录下，在使用过之后简单的删除掉就可以了。这样做也可以防止这些程序与宿主系统中相同的程序混淆(第五章中容易出现这样的事情)。
+    以 root 用户运行下面的命令来创建所需的目录：
+    mkdir -v $LFS/tools
+    下一步是在宿主系统上创建一个 /tools 符号链接，指向 LFS 分区上新创建的目录，这个命令同样要作为 root 用户运行：
+    ln -sv $LFS/tools /
+
+

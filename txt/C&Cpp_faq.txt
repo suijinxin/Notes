@@ -1,0 +1,44 @@
+---------------------------------------------------------
+#include <stdio.h>
+#include <string.h>
+
+void reverse(char*);
+
+main(){
+        char o[] = "abcd efgh ijkl";
+
+        printf("%s\n",o);
+        reverse(o);
+        printf("%s\n",o);
+        return 0;
+}
+
+void reverse(char* s){
+        int i,j;
+        int t;
+        for(i = 0, j = strlen(s)-1;i < j;++i,--j){
+                t = *(s+i);
+                *(s+i) = *(s+j);
+                *(s+j) = t;
+        }        
+
+}
+
+以上代码没有任何问题，执行结果也正确
+
+但是如果将char o[] = "abcd efgh ijkl"; 改写成 char* o = "abcd efgh ijkl";
+编译没有问题
+运行就会报错误
+我概念里面这2个一直是等价的 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+回答：
+   1、char* o = "abcd efgh ijkl"; 分配在data段.而且是只读的属性.(可以gcc -S 生成汇编代码看到.)不能修改.char o[] = "abcd efgh ijkl";在栈上分配.
+   2、这是数组和指针的功能区别。 
+	 3、const char *s表示s指向的地方不能动（s可以指向别的const char *）
+	 		char *const s表示s总是指向一个固定的地方（那个地方可以修改），这个可以_类似_于char s[] = "hello";
+      类似的，还可以const char *const s，这个_类似_于const char s[] = "hello";
+	 4、"abdc"是常量，在data段，因此只读，而不是o有只读属性。比如
+      char *o = "abdc"; // cannot change *o because "abdc" is in .data
+			char p[] = "hello";
+			o = p; // now you can change *o 
+=================================================================================================

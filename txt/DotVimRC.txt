@@ -1,0 +1,91 @@
+"------------------flw's vimrc----------------------
+set expandtab
+set shiftwidth=4
+set tabstop=4
+set softtabstop=4
+set nobackup
+set cindent
+set autoindent
+set showcmd
+set helplang=Cn
+set nofoldenable
+set noswapfile
+set number
+set mouse=nv
+set hlsearch
+set incsearch
+set viminfo+=h
+
+set nocp
+filetype plugin on
+
+autocmd FileType perl set keywordprg=perldoc\ -f
+
+nmap <F5> ^W_^W\|
+nmap <F6> ^W=
+imap <F5> <ESC>^W_^W\|a
+imap <F6> <ESC>^W=a
+nmap gF ^Wf
+
+syntax on
+
+colorscheme evening
+hi Normal ctermfg=grey ctermbg=black
+hi Visual ctermfg=green ctermbg=black
+hi Search term=reverse cterm=standout ctermfg=green  ctermbg=yellow
+hi IncSearch term=reverse cterm=standout ctermfg=green ctermbg=yellow
+hi PmenuSel ctermbg=Green ctermfg=Yellow
+"-----------------------------------------------------------------------------------------------
+"-----------------lowmer's vimrc---------------------------------------------------------------
+set nocompatible
+set nobackup
+set nu
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
+set expandtab
+set autoindent
+set ai
+
+set foldmethod=syntax "按照语法折叠代码，indent为按照缩进折叠代码，zi命令打开/关闭所有折叠
+set foldcolumn=3  "设置折叠区域的宽度
+set foldclose=all "设置为自动关闭折叠
+
+"对于安装了中文help有效
+        if version >= 603 
+                set helplang=cn
+        endif
+
+source $VIMRUNTIME/vimrc_example.vim
+source $VIMRUNTIME/mswin.vim
+source $vimruntime/colors/darkblue.vim  "设置配色方案
+behave mswin
+
+"默认配置
+set diffexpr=MyDiff()
+function MyDiff()
+  let opt = '-a --binary '
+  if &diffopt =~ 'icase' | let opt = opt . '-i ' | endif
+  if &diffopt =~ 'iwhite' | let opt = opt . '-b ' | endif
+  let arg1 = v:fname_in
+  if arg1 =~ ' ' | let arg1 = '"' . arg1 . '"' | endif
+  let arg2 = v:fname_new
+  if arg2 =~ ' ' | let arg2 = '"' . arg2 . '"' | endif
+  let arg3 = v:fname_out
+  if arg3 =~ ' ' | let arg3 = '"' . arg3 . '"' | endif
+  if &sh =~ '\<cmd'
+    silent execute '!""C:\Program Files\Vim\vim64\diff" ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3 . '"'
+  else
+    silent execute '!C:\Program" Files\Vim\vim64\diff" ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3
+  endif
+endfunction
+
+"设置F5为不同文件类型添加注释
+filetype plugin indent on 
+autocmd FileType cpp,java  map <F5> 0i//<Esc>
+autocmd FileType c  map! <F5> /* */<Esc>
+autocmd FileType sh        map! <F5> 0i#<Esc>
+
+''设置F12为运行python程序，运行前需要保存
+map <F12> :!c:\python24\python.exe % <CR>
+"------------------------------------------------------------------------------------------------------------

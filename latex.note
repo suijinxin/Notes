@@ -1,0 +1,57 @@
+----------SuiJinXin Latex2e Notes		-*-outline-*-
+* TexLive教育网升级地址 ---2010年12月25日 11:01:52 
+http://mirror.bjtu.edu.cn/CTAN/systems/texlive/Images/
+*＝＝＝Latex2e在Debian中安装的方法及使用＝＝＝2008年01月18日 | 11:55:37
+**＝＝＝安装＝＝＝
+	 Debian的unstable已经很好的支持TeXLive2007了
+	 apt-get install texlive cjk-latex dvipdfmx texlive-latex-extra
+**＝＝＝中文支持＝＝＝
+	 下载YueWang的中文支持包,将解压出来的.texlive2007/texmf-config复制并重新命名为~/.texmf-config,.texlive2007/texmf-var复制并重新命名为~/.texmf-var。（注意有的文件前面的点）
+	 可以把清华大学的模板~/.texmf-var/tex/latex/thuthesis给删了，换成debian源中的：
+	 apt-get install latex-thuthesis-utf8
+**＝＝＝测试范例＝＝＝
+建立一个test.tex范例文件内容如下：
+\documentclass{article}
+\usepackage{CJKutf8}
+\begin{document}
+\begin{CJK}{UTF8}{hei}
+  你好!
+\end{CJK}
+\end{document}
+
+运行命令：
+
+latex test.tex
+xdvi test.dvi
+dvipdfm test.dvi
+xpdf test.pdf
+pdflatex test.pdf
+**＝＝＝相关支持＝＝＝
+	 http://mailboxpublic.googlepages.com/texlive2007cjkchinesehowto 
+*===Latex2e的一些基本概念=== 2006-12-28 17:27
+
+**===1.1 一些常用的游戏规则===
+
+    LATEX 将空格和制表符等空白字符视为相同的空白距离（space）。多个连续的空白字符等同为一个空白字符。在LATEX 文件中，每行开始的空白字符将被忽略，而单个的回车符被视为一空格。
+    LATEX 使用空行来结束段落，两行文本中的空行标志上一段落的结束和新段落的开始。如同空格一样，多个空行所起的作用和一个空行的作用是相同的。
+		注解符号%可以用于去处行尾的空白。
+
+**===1.2 导言区(preamble)===
+	 \documentclass{article}
+	 ......
+	 \begin{document}
+	 ......
+	 \end{document}
+	 ......								
+	 在\documentclass{article}和\begin{document}之间的部分就叫做导言区。通常是用来定义一些全局的命令和参数。在\end{document}之后的部分通常用来写一些关于文档的注释，或者暂时不想包含到正文之中的内容，也有人叫其postamble。
+
+**===1.3 基本编译命令===
+		 命令                              功能  
+
+latex example.tex									产生example.dvi
+dvips -Ppdf example.dvi     			产生example.ps
+ps2pdf example.ps           			产生example.pdf
+dvipdfm[x] example.dvi       			由example.dvi直接产生example.pdf
+pdflatex example.tex         			由example.tex直接产生example.pdf
+				 注：使用[]说明参数是可以省略的，如dvipdfm[x]中的x。
+**===1.4 中文首行缩进===

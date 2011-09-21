@@ -1,0 +1,14 @@
+*-----2007-05-23----------
+ 1、 当程序包含不标准的头文件时，使用-I的参数告知GCC该头文件的具体路径。
+  $ gcc -I/usr/openwin/include fred.c
+ 2、 
+
+
+
+*--------2006-11-20---------
+==
+ $ gcc -I/usr/openwin/include fred.c
+ 编辑fred.c文件的时候直接指定去/usr/openwin/include目录下去找头文件
+==
+ $ grep EXIT_ *.h
+ 在/usr/include目录下运行以上命令可以找到EXIT

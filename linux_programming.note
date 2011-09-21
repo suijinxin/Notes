@@ -1,0 +1,38 @@
+----------SuiJinXin Linux Programming Notes		-*- outline -*-
+* APUE的代码如何运行 --2010年12月21日 20:54:52 
+    如何运行APUE中的代码？ APUE中的代码不是download下来就可以直接编译执行的。由于头文件的问题，需要做相关的设置，修改一下相关的文件。
+首先从http://www.apuebook.com/src.tar.gz下载源码压缩包，解压到相应目录，例如：
+mkdir /home/Rockics/src
+cd /home/Rockics/src/
+wget http://www.apuebook.com/src.tar.gz
+tar zxvf src.tar.gz
+解压以后得到文件夹apue.2e。按照以下步骤完成设置，则可以编译相关代码：
+1.进入相应目录：cd apue.2e；
+2.修改文件Make.defines.linux:将其中的WKDIR 修改为/home/Rockics/src/apue.2e，保存退出；
+3.修改文件std/linux.mk:将其中的nawk全部修改为wak，可在vi下使用命令：%s/nawk/awk/g完成；
+4.修改文件include/apue.h:在文件倒数第二行（也就是#endif之前）加入：#include "error.c"; 这一行；
+5.切换到root账户，将include/apue.h还有lib/error.c拷贝一份到/usr/include/下
+设置完毕：）
+测试：
+我运行APUE的第一个程序实验一下环境是否OK：
+APUE的第一个程序是myls.c，文件位于file/ls1.c，试试看其是否编译通过哈：
+$ gcc -o myls -Wall file/ls1.c
+很好，没有任何警告，设置成功。
+*---GCC -lm 参数的意义---2008年06月 4日 | 11:03:05
+    如果使用math.h库,编译时 要用参数 -lm
+    Q. 编译程序时得到undefined reference to 'xxxx'这样的错误提示
+    A: 缺少某个库，用 -l参数将库加入。Linux的库命名是一致的，一般为libxxx.so,或libxxx.a,libxxx.la，那么你要链接某个库就用-lxxx，去掉头lib及"."后面的so，la,a等即可。
+	同时，常见的库链接方法为：
+	数学库 -lm ,链接libm.a ; posix线程 -lpthread这个过程是链接过程,程序中的 #include <math>语句只是保证编译通过. 
+*---函数帮助安装---2008年05月23日 | 11:20:28
+    sudo apt-get install manpages-dev
+*---2007年05月 23日 | 15:19:56---
+  当程序包含不标准的头文件时，使用-I的参数告知GCC该头文件的具体路径。
+  $ gcc -I/usr/openwin/include fred.c
+*---2006年11月 20日 | 15:20:27---
+==
+ $ gcc -I/usr/openwin/include fred.c
+ 编辑fred.c文件的时候直接指定去/usr/openwin/include目录下去找头文件
+==
+ $ grep EXIT_ *.h
+ 在/usr/include目录下运行以上命令可以找到EXIT

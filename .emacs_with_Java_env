@@ -1,0 +1,511 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  
+;;   Setting MyLisp directory                             ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq load-path (cons "~/my-site-lisp/" load-path))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  
+;;                     设置快捷键                           ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(global-set-key [f3] 'bookmark-bmenu-list)      ;list bookmark
+(global-set-key [f4] 'ibuffer)                  ; Look buffer
+(global-set-key [f5] 'undo)                     ; undo
+(global-set-key [f6] 'eshell)                   ; run eshell
+(global-set-key [f7] 'calendar)                 ; run calendar 
+(global-set-key [f8] 'other-window)             ; Jump to  other Emacs window
+(global-set-key [f9] 'plan)                     ; run planner 
+(global-set-key [f11] 'compile)                 ; run compile
+(global-set-key [f12] 'gdb)                     ; run gdb
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  
+;;                     AUC TeX                            ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq auto-save-mode t) 
+                    ;(setq TeX-auto-save t) 
+(setq TeX-parse-self t) 
+(setq-default TeX-master nil)  
+(add-to-list 'load-path  "~/site-lisp/auctex/") 
+(add-to-list 'Info-default-directory-list  "~/site-lisp/auctex/doc/") 
+(load "tex-site")  
+;activate TeX-electric-macro on appear of  escape character '\'  
+(setq  TeX-electric-escape t)
+;(add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup) 
+;(autoload 'LaTeX-preview-setup "preview") 
+(eval-after-load "tex"
+  '(progn
+     (TeX-global-PDF-mode t)))
+
+(eval-after-load "tex"
+  '(progn
+     (setq TeX-output-view-style 
+           (cons '("^pdf$" "." "cmdproxy /C %o ") TeX-output-view-style))
+      ))
+;; -----------------------------------------------------------------  
+;; Reftex activation (Reftex is included with Emacs 21.1) 
+(autoload 'reftex-mode     "reftex" "RefTeX Minor Mode" t) 
+(autoload 'turn-on-reftex  "reftex" "RefTeX Minor Mode" nil) 
+(autoload 'reftex-citation "reftex-cite" "Make citation" nil) 
+(autoload 'reftex-index-phrase-mode "reftex-index" "Phrase mode" t) 
+(add-hook 'LaTeX-mode-hook 'turn-on-reftex) ; with AUCTeX LaTeX mode 
+(add-hook 'latex-mode-hook 'turn-on-reftex) ; with Emacs latex mode  
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                Setup chinese environment                                         ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 默认的语言
+(set-language-environment 'Chinese-GB)
+;; 键盘输入，用于输入法。
+(set-keyboard-coding-system 'chinese-iso-8bit)
+;; 终端显示的编码方式。
+(set-terminal-coding-system 'chinese-iso-8bit)
+;; 剪切板，用于和其他程序之间复制内容
+(set-clipboard-coding-system 'chinese-iso-8bit)
+;;设置字体 
+(set-default-font "-*-Courier New-Regular-r-*-*-14-*-*-*-c-*-fontset-chinese") 
+(set-keyboard-coding-system 'chinese-iso-8bit)
+(set-selection-coding-system 'chinese-iso-8bit)
+(setq locale-coding-system 'chinese-iso-8bit)
+(setq file-coding-system-alist 
+    (list file-coding-system-alist 
+        `(".*" chinese-iso-8bit))) 
+; fill mode for Chinese
+(setq sentence-end "\\([％，。！？、；：—·‘’“”～＂＇｀〈〉〔
+〕《》〖〗【】［］（）｛｝]\\|……\\|[ . ?!][]\"')}]*\\($\\|[
+\t]\\)\\)[ \t\n]*")
+(setq sentence-end-double-space t)
+(setq scalable-fonts-allowed t)
+(setq w32-enable-synthesized-fonts t)
+(put-charset-property 'chinese-cns11643-5 'nospace-between-words t)
+(put-charset-property 'chinese-cns11643-6 'nospace-between-words t)
+(put-charset-property 'chinese-cns11643-7 'nospace-between-words t)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  
+;;              General Setting                                                        ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;加载路径
+(add-to-list 'load-path "~/site-lisp")
+;;EMACS配色方案,菜单Tools->Color Theme 选择你需要的配色 
+(require 'color-theme)
+;(color-theme-gtk-ide)
+;(color-theme-comidia)
+(color-theme-arjen)
+;(color-theme-classic)
+;;禁用启动信息 
+(setq inhibit-startup-message t) 
+;;关闭烦人的出错时的提示声 
+(setq visible-bell t) 
+;;把title设置为“文件名@LC's Emacs" 
+(setq frame-title-format
+	'("  GNU Emacs   -   [ " (buffer-file-name "%f \]"
+		(dired-directory dired-directory "%b \]"))))
+;;光标靠近鼠标的时候，让鼠标自动让开，别挡住视线
+(mouse-avoidance-mode 'animate)
+;;下面的这个设置可以让光标指到某个括号的时候显示与它匹配的括号 
+(show-paren-mode t) 
+(setq show-paren-style 'parentheses) 
+;;设置缺省模式是text，而不是基本模式
+(setq default-major-mode 'text-mode) 
+(add-hook 'text-mode-hook 'turn-on-auto-fill) 
+;;设置tab为2个空格的宽度 
+(setq default-tab-width 2) 
+;;防止页面滚动时跳动 
+(setq scroll-margin 3
+      scroll-conservatively 10000)
+;; 所有的备份文件转移到~/backups目录下 
+(setq backup-directory-alist (quote (("." . "~/backups")))) 
+(setq version-control t)
+(setq kept-old-versions 2)
+(setq kept-new-versions 5)
+(setq delete-old-versions t)
+(setq backup-directory-alist '(("." . "~/backups")))
+(setq backup-by-copying t)
+;; Emacs 中，改变文件时，默认都会产生备份文件(以 ~ 结尾的文件)。可以完全去掉
+;; (并不可取)，也可以制定备份的方式。这里采用的是，把所有的文件备份都放在一
+;; 个固定的地方("~/var/tmp")。对于每个备份文件，保留最原始的两个版本和最新的
+;; 五个版本。并且备份的时候，备份文件是复本，而不是原件。
+;;设置kill-ring-max(我不知道怎么翻译这个词：)为200，以防不测：） 
+(setq kill-ring-max 200)
+;; 设置时间戳，标识出最后一次保存文件的时间。
+(setq time-stamp-active t)
+(setq time-stamp-warn-inactive t)
+(setq time-stamp-format "%:y-%02m-%02d %3a %02H:%02M:%02S K.T")
+;;设置默认工作目录 
+(setq default-directory "~/") 
+;;显示列号
+(setq column-number-mode t)
+;设置默认的列数是123
+(setq default-fill-column 12300)
+;;'y' for 'yes', 'n' for 'no' 
+(fset 'yes-or-no-p 'y-or-n-p) 
+;; 如果设置为 t，光标在 TAB 字符上会显示为一个大方块 :)。
+;;(setq x-stretch-cursor nil)
+;;如果 不要 tool-bar 和 scroll-bar就将t改为-1。
+(scroll-bar-mode t)
+(tool-bar-mode t)
+; 开启语法高亮。
+(global-font-lock-mode 1) 
+;打开压缩文件时自动解压缩。
+(auto-compression-mode 1)                             
+; 光标不要闪烁。
+(blink-cursor-mode -1)
+; 不要 menu-bar。
+;(menu-bar-mode -1)
+; 给出用 M-x foo-bar-COMMAND 输入命令的提示。
+(icomplete-mode 1)
+; 打开文件和转换 buffer 的方便模式。
+;(ido-mode 1)
+;;DIRED CONFIG
+(require 'dired)
+(require 'dired-x)
+;; C-x C-j                 跳转到当前文件所在目录的 dired 缓冲[x]
+(global-set-key "\C-x\C-j" 'dired-jump)
+(define-key dired-mode-map "b" 'dired-mark-extension)
+(define-key dired-mode-map "c" 'dired-up-directory)
+(define-key dired-mode-map "e" 'dired-mark-files-containing-regexp)
+(define-key dired-mode-map "o" 'chunyu-dired-open-explorer)
+(define-key dired-mode-map "r" 'dired-mark-files-regexp)
+(define-key dired-mode-map "/" 'dired-mark-directories)
+(define-key dired-mode-map "K" 'dired-kill-subdir)
+(define-key dired-mode-map [(control ?/)] 'dired-undo)
+
+(defun chunyu-dired-open-explorer ()
+	(interactive)
+	(let ((file-name (dired-get-file-for-visit)))
+	(if (file-exists-p file-name)
+	(w32-shell-execute "open" file-name nil 1))))
+
+(setq dired-listing-switches "-avl" ;; ls 文件列表参数
+	dired-recursive-copies 'top   ;; 复制目录时，递归复制所有字目录
+	dired-recursive-deletes 'top  ;; 删除目录时，递归删除所有字目录
+	cvs-dired-use-hook 'always)   ;; 浏览 CVS 时，自动打开 pcl-cvs 界面
+;;让emacs在windows上启动时最大化
+(defun w32-restore-frame () 
+"Restore a minimized frame" 
+(interactive) 
+(w32-send-sys-command 61728)) 
+(defun w32-maximize-frame () 
+"Maximize the current frame" 
+(interactive) 
+(w32-send-sys-command 61488)) 
+(w32-maximize-frame)
+;;开启图片浏览 
+(require 'thumbs) 
+(auto-image-file-mode t) 
+;;导出成html高亮显示
+(require 'htmlize)
+(add-to-list 'auto-mode-alist (cons  "\\.js\\'" 'javascript-mode))
+    (autoload 'javascript-mode "javascript" nil t)
+(add-to-list 'auto-mode-alist '("\\.css\\'" . css-mode))
+    (autoload 'css-mode "css-mode" nil t)
+;;英文的拼写检查
+(require 'flyspell) 
+;;open tabbar 
+(require 'tabbar) 
+(tabbar-mode)
+(setq tabbar-buffer-groups-function 'tabbar-buffer-ignore-groups)
+
+(defun tabbar-buffer-ignore-groups (buffer)
+  "Return the list of group names BUFFER belongs to.
+Return only one group for each buffer."
+  (with-current-buffer (get-buffer buffer)
+    (cond
+     ((or (get-buffer-process (current-buffer))
+          (memq major-mode
+                '(comint-mode compilation-mode)))
+      '("Process")
+      )
+     ((member (buffer-name)
+              '("*scratch*" "*Messages*"))
+      '("Common")
+      )
+     ((eq major-mode 'dired-mode)
+      '("Dired")
+      )
+     ((memq major-mode
+            '(help-mode apropos-mode Info-mode Man-mode))
+      '("Help")
+      )
+     ((memq major-mode
+            '(rmail-mode
+              rmail-edit-mode vm-summary-mode vm-mode mail-mode
+              mh-letter-mode mh-show-mode mh-folder-mode
+              gnus-summary-mode message-mode gnus-group-mode
+              gnus-article-mode score-mode gnus-browse-killed-mode))
+      '("Mail")
+      )
+	 ((memq major-mode
+            '(php-mode html-mode c-mode java-mode text-mode conf-mode lisp-mode javascript-mode css-mode))
+      '("Mywork")
+      )
+	 ((member (buffer-name)
+              '("*w3m*"))
+      '("Mywork")
+      )
+     (t
+      (list 
+       "default"  ;; no-grouping
+       (if (and (stringp mode-name) (string-match "[^ ]" mode-name))
+           mode-name
+         (symbol-name major-mode)))
+      )
+     
+     )))
+;;设置个人信息
+(setq user-full-name "suijinxin")
+(setq user-mail-address "suijinxin@gmail.com")
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;   " Date and Calendar" environment Setting                                       ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;display date 
+(setq display-time-day-and-date t) 
+(display-time) 
+;;display time
+(setq display-time-24hr-format t)
+(setq display-time-day-and-date t)
+(setq display-time-use-mail-icon t)
+(setq display-time-interval 10)
+;;default diary files
+(setq diary-file "~/.emacs.d/.diary")
+;; 设置所在地的经纬度和地名，calendar 可以根据这些信息告知你每天的日出和日落的时间。
+(setq calendar-latitude +45.75)
+(setq calendar-longitude +126.63)
+(setq calendar-location-name "Harbin")
+
+(setq calendar-remove-frame-by-deleting t)
+(setq calendar-week-start-day 1)
+(setq christian-holidays nil)
+(setq hebrew-holidays nil)
+(setq islamic-holidays nil)
+(setq solar-holidays nil)
+(setq general-holidays '((holiday-fixed 1 1 "元旦")
+                         (holiday-fixed 4 1 "愚人节")
+                         (holiday-float 5 0 2 "母亲节")
+                         (holiday-float 6 0 3 "父亲节")))
+;;一些有待研究的问题
+(setq mark-diary-entries-in-calendar t)
+;;打开约会提醒功能
+(setq appt-issue-message t)
+;(setq mark-holidays-in-calendar nil)
+;(setq view-calendar-holidays-initially nil)
+
+;; Calendar 中 p C 可以看到我们的阴历有中文的天干地支。
+(setq chinese-calendar-celestial-stem
+      ["甲" "乙" "丙" "丁" "戊" "己" "庚" "辛" "壬" "癸"])
+(setq chinese-calendar-terrestrial-branch
+      ["子" "丑" "寅" "卯" "辰" "巳" "午" "未" "申" "酉" "戌" "亥"])
+
+;; Emacs TODO 模式的相关文件。
+(setq todo-file-do "~/.emacs.d/todo-do")
+(setq todo-file-done "~/.emacs.d/todo-done")
+(setq todo-file-top "~/.emacs.d/todo-top")
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                Setup Programming environment                                     ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;setting CC-mode
+(autoload 'awk-mode "cc-mode" nil t)
+;;把c语言风格设置为k&r风格 
+(add-hook 'c-mode-hook 'linux-c-mode)
+(add-hook 'c++-mode-hook 'linux-cpp-mode)
+;; 设置imenu的排序方式为按名称排序
+(setq imenu-sort-function 'imenu--sort-by-name)
+(defun linux-c-mode() 
+;; 将回车代替C-j的功能，换行的同时对齐
+  (define-key c-mode-map [return] 'newline-and-indent)
+  (interactive) 
+;; 设置C程序的对齐风格
+  (c-set-style "K&R") 
+;; 自动模式，在此种模式下当你键入{时，会自动根据你设置的对齐风格对齐
+;;  (c-toggle-auto-state)
+;; 此模式下，当按Backspace时会删除最多的空格
+  (c-toggle-hungry-state)
+;; TAB键的宽度设置为4
+  (setq c-basic-offset 4)
+;; 在菜单中加入当前Buffer的函数索引
+  (imenu-add-menubar-index)
+;; 在状态条上显示当前光标在哪个函数体内部
+  (which-function-mode) 
+ ) 
+(defun linux-cpp-mode() 
+  (define-key c++-mode-map [return] 'newline-and-indent)
+  (define-key c++-mode-map [(control c) (c)] 'compile)
+  (interactive) 
+  (c-set-style "K&R") 
+  (c-toggle-auto-state)
+  (c-toggle-hungry-state)
+  (setq c-basic-offset 4)
+  (imenu-add-menubar-index)
+  (which-function-mode)
+  )
+;;显示行号----display-line-number.el
+(require 'display-line-number)
+;; 设置显示格式
+(setq display-line-number-format "%4d  ")
+;; 在 tool bar 上增加一个图标， 
+;; 注意: 一定要在 load-path 中 可以找到 display-line-nuber.xpm 文件才行。
+(tool-bar-add-item "display-line-number"
+                   'display-line-number-mode
+                   'display-line-number-mode
+                   :help "display line number!"
+                   :button (cons :toggle  '(and (boundp
+                                                 display-line-number-mode) 
+                                                display-line-number-mode)))
+;; 使用方法
+;; M-x display-line-number-mode 
+;; 用来 toggle 显示行号的模式
+;; M-x display-line-number-mode-on
+;; 启动显示行号的模式
+;; M-x display-line-number-mode-off
+;; 关闭显示行号的模式
+;; 仅对某种 mode 启动显示行号的模式
+;; (add-hook 'c-mode-hook 'display-line-number-mode)
+;; 代码折叠 
+(load-library "hideshow") 
+(add-hook 'java-mode-hook 'hs-minor-mode) 
+(add-hook 'perl-mode-hook 'hs-minor-mode) 
+(add-hook 'php-mode-hook 'hs-minor-mode) 
+(add-hook 'emacs-lisp-mode-hook 'hs-minor-mode)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                Setting Planner                                                   ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(add-to-list 'load-path "~/my-site-lisp/planner")
+(add-to-list 'load-path "~/my-site-lisp/emacs-wiki")
+(add-to-list 'load-path "~/my-site-lisp/remember")
+(require 'planner)
+(global-set-key [F3 t] 'planner-create-task-from-buffer)
+;(setq mark-diary-entries-in-calendar t)
+;;Stock files
+(load-library "planner-schedule")
+(require 'planner-tasks-overview)
+(require 'planner-timeclock)
+(require 'planner-lisp)
+(load-library "planner-timeclock-summary")
+;(require 'planner-id)
+;(require 'planner-cyclic)
+(require 'planner-deadline) 
+;;(require 'planner-unix-mail)
+;;(require 'planner-vm)
+;;(load-library "planner-w3m")
+;;(require 'planner-wl)
+;;(require 'planner-xtla)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                Setup Emacs-Wiki environment                                      ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'emacs-wiki)
+(setq emacs-wiki-meta-charset "gb2312")
+(setq emacs-wiki-charset-default "gb2312")
+(setq emacs-wiki-directories '("~/my-data/wiki/webpage"))
+(setq emacs-wiki-maintainer "mailto:coolmantis@126.com")
+;<------------when emacs start,open plan------------------------>
+;(plan)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                Config Mew  environment                                           ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;装载Mew
+(setq load-path (cons "~/my-site-lisp/mew-5.1" load-path))
+(autoload 'mew "mew" nil t)
+(autoload 'mew-send "mew" nil t)
+(setq mew-icon-directory "~/my-site-lisp/mew-5.1/etc")
+(setq mew-use-cached-passwd t)
+(if (boundp 'read-mail-command)
+    (setq read-mail-command 'mew))
+(autoload 'mew-user-agent-compose "mew" nil t)
+(if (boundp 'mail-user-agent)
+    (setq mail-user-agent 'mew-user-agent))
+(if (fboundp 'define-mail-user-agent)
+    (define-mail-user-agent
+       'mew-user-agent
+       'mew-user-agent-compose
+       'mew-draft-send-message
+       'mew-draft-kill
+       'mew-send-hook))
+(setq mew-pop-size 0)
+(setq mew-smtp-auth-list nil)
+(setq toolbar-mail-reader 'Mew)
+(set-default 'mew-decode-quoted 't)  
+(when (boundp 'utf-translate-cjk)
+      (setq utf-translate-cjk t)
+      (custom-set-variables
+         '(utf-translate-cjk t)))
+(if (fboundp 'utf-translate-cjk-mode)
+    (utf-translate-cjk-mode 1)) 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                Setup JDEE environment                                            ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(add-to-list 'load-path (expand-file-name "~/my-site-lisp/jde/lisp"))
+(add-to-list 'load-path (expand-file-name "~/my-site-lisp/cedet/semantic"))
+(add-to-list 'load-path (expand-file-name "~/my-site-lisp/cedet/speedbar"))
+(add-to-list 'load-path (expand-file-name "~/my-site-lisp/elib"))
+(add-to-list 'load-path (expand-file-name "~/my-site-lisp/cedet/eieio"))
+
+(add-to-list 'load-path (expand-file-name "~/my-site-lisp/cedet/common"))
+
+;; Initialize CEDET.
+(load-file (expand-file-name "~/my-site-lisp/cedet/common/cedet.el"))
+
+(setq defer-loading-jde nil)
+;; If you want Emacs to defer loading the JDE until you open a 
+;; Java file, edit the following line
+;; to read:
+;;
+;;(setq defer-loading-jde t)
+;;
+
+(if defer-loading-jde
+(progn
+(autoload 'jde-mode "jde" "JDE mode." t)
+(setq auto-mode-alist
+(append
+'(("\.java\'" . jde-mode))
+auto-mode-alist)))
+(require 'jde))
+;; Sets the basic indentation for Java source files
+;; to two spaces.
+(defun my-jde-mode-hook ()
+(setq c-basic-offset 2))
+(add-hook 'jde-mode-hook 'my-jde-mode-hook)
+
+;;----------------configauto addition-----------------------------------------
+(put 'upcase-region 'disabled nil)
+(custom-set-variables
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(erc-nick "jinxin")
+ '(erc-port 6667)
+ '(jde-compiler (quote ("javac" "")))
+ '(jde-jdk-registry (quote (("1.5.0" . "D:/Program Files/Java/jdk1.5.0")))))
+(custom-set-faces
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ )
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;               ERC  configure                                               ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(add-to-list 'load-path "~/my-site-lisp/erc")
+(require 'erc)
+(require 'erc-list)
+(require 'erc-nicklist)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                Setup chinese environment                                         ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ (require 'cal-china-x)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                Setup chinese environment                                         ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                Setup chinese environment                                         ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                Setup chinese environment                                         ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                Setup chinese environment                                         ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                Setup chinese environment                                         ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+

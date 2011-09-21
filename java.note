@@ -1,0 +1,30 @@
+					SuiJinXin basic knowledge of Java Notes		-*- outline -*-
+* Java环境变量设置  --2011年04月 6日 18:50:07 
+** Windows
+
+JAVA_HOME=c:\jdk1.6
+CLASSPATH=.;%JAVA_HOME%\lib\dt.jar;%JAVA_HOME%\lib\tools.jar;     （.;一定不能少，因为它代表当前路径)
+或者
+CLASSPATH=.;%JAVA_HOME%\lib
+PATH=%JAVA_HOME%\bin;
+
+** Linux(For General Distribution)
+Download the latest JavaSE just like  
+
+edit  /etc/profile or ~/.bashrc  etc.
+
+export JAVA_HOME=/usr/java/latest
+export PATH=$JAVA_HOME/bin:$PATH
+export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+export JRE_HOME=/usr/java/latest										(For Tomcat)
+export TOMCAT_HOME=/usr/tomcat											(For Tomcat)
+export ANT_HOME=/usr/local/ant											(For Ant)
+export PATH=${PATH}:${ANT_HOME}/bin										(Add execution path)
+
+** Other
+1、单独下载doc.zip解压到安装目录
+2、同时，单独解压安装目录下的src.zip文件
+
+   1)mkdir src
+   2)cd src
+   3)jar xvf ..\src.zip 

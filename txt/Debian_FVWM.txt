@@ -1,0 +1,59 @@
+安装步骤
+从基本的debian系统开始，即字符界面开始。
+1.安装X系统。
+
+apt-get install x-window-system-core
+
+2.安装fvwm
+
+apt-get install menu fvwm fvwm-icon xloadimage
+
+3.下载PEM的资源包。
+
+PEM包（非1024x768)
+
+http://pemarchandet.free.fr/fvwm/001/fvwm.tbz2
+
+也可以下载linuxsir优化过的，分辨率是1024x768.
+
+http://fedora.linuxsir.org/main/files/myFvwm.tar.gz
+
+
+4.解压包（假设下载到tmp文件夹中）
+
+cd ~/tmp/
+tar -zxvf myFvwm.tar.gz 
+
+这时，你是用ls命令是看不到解压出来的文件夹的。必须
+
+ls -a
+. .. .fvwm myFvwm.tar.gz
+
+
+怎么样？
+
+接下来把这个文件夹复制到用户根目录下。
+
+cp -r .fvwm ~/.fvwm
+在用户根目录中建立 .xinitrc  文件。我的文件内容：
+
+LANGUAGE=zh_CN.GB2312
+LANG=zh_CN.GB2312
+LC_ALL=zh_CN.GB2312
+KDE_LANG=zh_CN.GB2312
+XMODIFIERS=@im=fcitx
+export LANG LC_ALL KDE_LANG XMODIFIERS
+fcitx &
+#xloadimage ~/.fvwm/pic.png -onroot -fullscreen
+exec fvwm
+killall fcitx
+
+好了，基本配置已经完成了！！
+
+启动图形界面！
+
+startx
+d
+OK
+
+

@@ -1,0 +1,73 @@
+一、/etc/network/interfaces 网络接口参数配置文件
+下面是一个配置示例，它在一个网络接口中配置了两个静态IP地址：
+# /etc/network/interfaces -- configuration file for ifup(8), ifdown(8)
+# The loopback interface
+auto lo
+iface lo inet loopback 
+# The first network card - this entry was created during the Debian installation
+# (network, broadcast and gateway are optional)
+auto eth0
+iface eth0 inet static
+address 192.168.1.1
+netmask 255.255.255.0
+network 192.168.1.0
+broadcast 192.168.1.255
+#gateway 192.168.1.1
+#name 以太网局域网网卡 
+auto eth0:0
+iface eth0:0 inet static
+iface eth0 inet static
+address 192.168.1.2
+netmask 255.255.255.0
+network 192.168.1.0
+broadcast 192.168.1.255
+gateway 192.168.1.1
+下面是一个从DHCP服务器自动获得IP地址的示例：
+# /etc/network/interfaces -- configuration file for ifup(8), ifdown(8)
+# The loopback interface
+auto lo
+iface lo inet loopback
+
+# The first network card - this entry was created during the Debian installation
+# (network, broadcast and gateway are optional)
+auto eth0
+iface eth0 inet dhcp
+二、/etc/resolv.conf DNS域名解析的配置文件
+它的格式很简单，每行以一个关键字开头，后接配置参数。resolv.conf的关键字主要有四个，分别是：
+nameserver   #定义DNS服务器的IP地址
+domain       #定义本地域名
+search       #定义域名的搜索列表
+sortlist     #对返回的域名进行排序
+
+/etc/resolv.conf的一个示例：
+domain ringkee.com
+search www.ringkee.com ringkee.com
+nameserver 202.96.128.86
+nameserver 202.96.128.166
+最主要是nameserver关键字，如果没指定nameserver就找不到DNS服务器，其它关键字是可选的。
+三、/etc/host.conf
+当系统中同时存在DNS域名解析和/etc/hosts主机表机制时，由该/etc/host.conf确定主机名解释顺序。示例：
+
+order hosts,bind    #名称解释顺序
+multi on            #允许主机拥有多个IP地址
+nospoof on          #禁止IP地址欺骗
+
+order是关键字，定义先用本机hosts主机表进行名称解释，如果不能解释，再搜索bind名称服务器(DNS)。
+四、/etc/hosts
+设置IP地址与主机名对应表，可用该文件来进行主机名称解释。如：
+
+#格式：IP地址     主机名       别名
+127.0.0.1 localhost localhost.localdomain
+192.168.1.1 debian debian
+192.168.0.2 t02 t02.tiger
+192.168.0.4 t04 t04.tiger
+五、/etc/hostname
+该文件只有一行，记录着本机的主机名。
+六、/etc/hosts.allow和/etc/hosts.deny
+这两个文件是tcpd服务器的配置文件，tcpd服务器可以控制外部IP对本机服务的访问。这两个配置文件的格式如下：
+#服务进程名:主机列表:当规则匹配时可选的命令操作
+server_name:hosts-list[:command]
+/etc/hosts.allow控制可以访问本机的IP地址，/etc/hosts.deny控制禁止访问本机的IP。如果两个文件的配置有冲突，以/etc/hosts.deny为准。下面是一个/etc/hosts.allow的示例：
+ALL:127.0.0.1         #允许本机访问本机所有服务进程
+smbd:192.168.0.0/255.255.255.0     #允许192.168.0.网段的IP访问smbd服务
+ALL关键字匹配所有情况，EXCEPT匹配除了某些项之外的情况，PARANOID匹配你想控制的IP地址和它的域名不匹配时(域名伪装)的情况。

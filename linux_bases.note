@@ -1,0 +1,71 @@
+﻿				SuiJinXin basic knowledge of linux Notes	  	-*- outline -*-
+* 两台机器之间传送文件 --2011年07月12日 17:02:06 
+
+如果要把 A上的 /root/abc.zip 传到 B机并放到/abc目录，可以在A机上用命令
+    scp  /root/abc.zip  root@192.168.3.102:/abc/
+
+若 SSH端口不是默认的22，比如，是端口1234 则加-P参数：
+    scp  -P 1234 /root/abc.zip  root@192.168.3.102:/abc/
+
+也可以在B机上用命令：
+    scp  root@192.168.1.240:/root/abc.zip  /abc/ 
+
+* Linux压缩命令  --2010年12月29日 17:57:00
+ 
+** tar 
+tar 
+* Git via HTTP Proxy --2010年12月29日 15:54:04  
+** １、安装 connect-proxy
+方法一
+$sudo apt-get install connect-proxy
+方法二
+$wget http://ftp.de.debian.org/debian/pool/main/c/connect-proxy/connect-proxy_1.100.orig.tar.gz
+$tar -xzvf connect-proxy_1.100.orig.tar.gz  
+$sudo gcc connect-proxy-1.100/connect.c -o /usr/bin/connect
+** ２、编辑脚本 /usr/bin/my-git-proxy
+#!/bin/sh
+connect -H http://myproxy:10080 $@
+** ３、赋予权限
+$sudo chmod 755 /usr/bin/my-git-proxy
+** ４、配置Git
+$git config --global core.gitproxy "my-git-proxy"
+* CRLF、LF与CR  换行符的关系 --2010年12月15日 11:25:13 
+google之后，总结几点经验：
+1、其实Dreamweaver是可以选择换行类型的：CRLF（Dos/windows）、LF（Unix/Linux）、CR（Mac）
+2、某些Unix下的编辑器会把CRLF误认为LFLF，或者显示为^M（仍是LF），没经验的工程师很容易误会它们
+3、即使用Windows记事本打开看起来全是一行，LF（/n）字符还是存在的可以放心
+4、有个表：
+				Client Action Server
+====================================================================
+LF		—		Unix checkin			 –>		 LF
+CRLF 	<– 		Windows checkout 		 — 	 LF
+CRLF	 — 	Unix checkin 			 –>	 	 CRLF
+CRCRLF <– 		Windows checkout 	 	 — 	 CRLF
+作者建议要防止混乱切记不要用Unix的CVS客户端（包括Cygwin的CVS客户端）Checkin DOS格式的文件。
+** 最终格式选择
+还是用CRLF以保证兼容吧，毕竟很多系统和软件都能正确识别这些格式并转换；
+或者说，我们用CRLF的话，可以保证Unix换行，也可以保证Mac换行。
+* CentOS下DHCPD服务的启动相关 --2010年11月14日 14:04:22 
+** 配置文件位置：
+/etc/dhcpd.conf
+** 相关命令：
+/etc/init.d/dhcpd {start|stop|restart|condrestart|configtest|status}
+* redhat fedora centos查看服务列表 --2010年11月14日 13:25:00 
+**检查服务状态：
+service --status-all
+service --status-all | grep ntpd
+service --status-all | less
+service httpd status
+** 列出所有服务启动级别：
+chkconfig --list
+** 列出服务和他们对应的端口：
+netstat -tulpn
+* Linux下调整硬盘自检频率  --2010年10月10日 20:15:34 
+    在Windows下如果出现意外断电死机情况，下次开机一般都会出现系统自检。Linux系统下面也有文件系统自检，而且是可以通过明令tune2fs，自行定义自检周期及方式。
+** 调整每2次完整地检查根文件系统的装载次数为100次：
+# tune2fs -c 100 /dev/sda1 
+** 调整每2次完整地检查根文件系统的时间间隔为20周： 
+# tune2fs -i 20w /dev/sda1 
+** 调整根文件系统保留空间为10000个磁盘块： 
+# tune2fs -r 40000 /dev/sda1 
+* 输入法环境变量解析 ---2010年01月22日 14:22:27			

@@ -1,0 +1,377 @@
+---------------SuiJinXin CentOS Notes		-*- outline -*-
+* CentOS修改主机名 --2011年07月 5日 12:28:29 
+** 1. 修改配置文件
+设置CentOS主机名称的文件为：/etc/sysconfig/network，修改其中HOSTNAME后的名称为想要的名称，例如：
+NETWORKING=yes
+NETWORKING_IPV6=yes
+HOSTNAME=fify
+GATEWAY=10.60.1.254
+** 2. 修改hosts文件
+用户在进行网络连接时，首先查找该文件，寻找对应主机名（或域名）对应的IP地址。我们修改之后的用户名对应的IP地址为127.0.0.1，修改/etc/hosts文件如下：
+# Do not remove the following line, or various programs
+# that require network functionality will fail.
+127.0.0.1               fify localhost.localdomain localhost
+::1             localhost6.localdomain6 localhost6
+** 3. 使用hostname命令修改主机名
+完成以上两步之后，你会发现实际的主机名称并没有发生变化，是因为修改以后的配置文件在下次重启的时候才能加载，这时可以使用hostname命令来修改主机名称，命令如下：
+
+hostname fify
+
+修改完成后，可以执行hostname查看当前系统使用的主机名称：
+
+hostname
+
+* CentOS静态IP更改配置 --2011年05月22日 10:10:09 
+** 原来的动态IP配置文件
+修改文件：vim /etc/sysconfig/network-scripts/ifcfg-eth0
+
+# Marvell Technology Group Ltd. 88E8057 PCI-E Gigabit Ethernet Controller
+DEVICE=eth0
+BOOTPROTO=dhcp
+HWADDR=00:01:6C:4F:90:E7
+ONBOOT=yes
+              ||
+			  ||
+			  ||  (更改为)
+			  VV
+DEVICE=eth0
+BOOTPROTO=static
+BROADCAST=192.168.3.255
+HWADDR=00:01:6C:4F:90:E7
+IPADDR=192.168.3.59
+IPV6INIT=yes
+IPV6_AUTOCONF=yes
+NETMASK=255.255.255.0
+NETWORK=192.168.3.0
+ONBOOT=yes
+** DNS配置
+修改文件：vim /etc/resolv.conf
+nameserver 202.118.224.101
+nameserver 202.97.224.68
+** 查看默认网关是否正确
+*** 问题描述：
+运行route命令，得到如下结果：(症状是能访问内网，ping不通外网)
+               ||
+			   ||
+			   VV
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+192.168.3.0     *               255.255.255.0   U     0      0        0 eth0
+169.254.0.0     *               255.255.0.0     U     0      0        0 eth0
+
+默认的网关应该为192.168.3.254
+*** 解决方案：
+新建文件：
+vim /etc/sysconfig/network-scripts/route-eth0
+添加如下内容：
+default via 192.168.3.254
+重新启动网络服务：
+service network restart
+或者
+/etc/init.d/network restart
+
+** 测试解决
+
+* CentOS系统服务配置  --2011年05月22日 08:23:02 
+chkconfig 
+* CentOS禁用SElinux  --2011年05月21日 19:48:28 
+如果在Linux中不想用SElinux。
+运行vim /etc/sysconfig/selinux
+
+把SELINUX=enforcing修改为
+
+SELINUX=enforcing --> SELINUX=disabled
+
+然后重启你的Linux系统就行了。
+* CentOS安装配置Ganglia备忘 --2011年05月21日 16:47:32 
+** 1、依赖条件(yum库自带)
+yum -y install apr-devel apr-util 
+yum -y install check-devel cairo-devel pango-devel libxml2-devel
+yum -y install rpm-build glib2-devel dbus-devel freetype-devel
+yum -y install fontconfig-devel gcc-c++ expat-devel
+yum -y install python-devel libXrender-devel
+yum -y install libart_lgpl-devel
+** 2、安装confuse-2.7
+*** 方法1、最新版源码编译（64位系统下有问题）
+**** 编译方法
+下载地址：http://www.nongnu.org/confuse/
+ 
+./configure --prefix=/usr/local/confuse CFLAGS=-fPIC --disable-nls --enable-shared
+make
+make install
+--64位OS需以下操作
+mkdir /usr/local/confuse/lib64
+cp -a /usr/local/confuse/lib/* /usr/local/confuse/lib64/
+
+**** 问题描述：
+make[2]: Entering directory `/root/soft/centos/ganglia-3.1.7/lib'
+/bin/sh ../libtool --tag=CC   --mode=link gcc -std=gnu99 -I.. -I. -I../include/ -D_LARGEFILE64_SOURCE -DSYSCONFDIR='"/etc/ganglia"' -g -O2 -I/usr/local/rrdtool/include -I/usr/local/confuse/include -fno-strict-aliasing -Wall -D_REENTRANT -version-info 0:0:0 -release 3.1.7 -export-dynamic  -L/usr/local/rrdtool/lib -L/usr/local/confuse/lib64 -o libganglia.la -rpath /usr/local/ganglia/lib64 gm_protocol_xdr.lo become_a_nobody.lo debug_msg.lo daemon_init.lo file.lo dotconf.lo error_msg.lo ganglia.lo hash.lo inetaddr.lo llist.lo my_inet_ntop.lo rdwr.lo readdir.lo tcp.lo scoreboard.lo apr_net.lo libgmond.lo 	 -ldl -lnsl -lnsl -lpcre -lexpat -lconfuse -lapr-1 -lpthread 
+gcc -std=gnu99 -shared  .libs/gm_protocol_xdr.o .libs/become_a_nobody.o .libs/debug_msg.o .libs/daemon_init.o .libs/file.o .libs/dotconf.o .libs/error_msg.o .libs/ganglia.o .libs/hash.o .libs/inetaddr.o .libs/llist.o .libs/my_inet_ntop.o .libs/rdwr.o .libs/readdir.o .libs/tcp.o .libs/scoreboard.o .libs/apr_net.o .libs/libgmond.o  -Wl,--rpath -Wl,/usr/lib64 -Wl,--rpath -Wl,/usr/lib64 -L/usr/local/rrdtool/lib -L/usr/local/confuse/lib64 -ldl -lnsl -lpcre /usr/lib64/libexpat.so /usr/local/confuse/lib/libconfuse.a /usr/lib64/libapr-1.so -lpthread  -Wl,-soname -Wl,libganglia-3.1.7.so.0 -o .libs/libganglia-3.1.7.so.0.0.0
+/usr/bin/ld: /usr/local/confuse/lib/libconfuse.a(confuse.o): relocation R_X86_64_32 against `a local symbol' can not be used when making a shared object; recompile with -fPIC
+/usr/local/confuse/lib/libconfuse.a: could not read symbols: Bad value
+collect2: ld returned 1 exit status
+make[2]: *** [libganglia.la] 错误 1
+make[2]: Leaving directory `/root/soft/centos/ganglia-3.1.7/lib'
+make[1]: *** [all-recursive] 错误 1
+make[1]: Leaving directory `/root/soft/centos/ganglia-3.1.7'
+make: *** [all] 错误 2
+
+*** 方法2、安装稍低版本的rpm包
+在地址：
+http://download.fedora.redhat.com/pub/epel/5/x86_64/
+下载64位安装包， libconfuse-2.5-4.el5.x86_64.rpm和libconfuse-devel-2.5-4.el5.x86_64.rpm  
+运行命令：
+rpm -ivh libconfuse-2.5-4.el5.x86_64.rpm libconfuse-devel-2.5-4.el5.x86_64.rpm
+即可  
+** 3、安装rrdtool-1.4.5
+*** 下载地址：
+http://oss.oetiker.ch/rrdtool
+*** 准备相关依赖库（具体看编译提示安装）
+yum install libdbi-devel tcl-devel
+*** 编译
+./configure --prefix=/usr/local/rrdtool
+make
+make install
+*** 验证是否成功
+运行命令：
+/usr/local/rrdtool/bin/rrdtool
+
+显示以下信息即安装成功：
+
+RRDtool 1.4.5  Copyright 1997-2010 by Tobias Oetiker <tobi@oetiker.ch>
+               Compiled May 21 2011 17:24:04
+
+Usage: rrdtool [options] command command_options
+Valid commands: create, update, updatev, graph, graphv,  dump, restore,
+		last, lastupdate, first, info, fetch, tune,
+		resize, xport, flushcached
+
+RRDtool is distributed under the Terms of the GNU General
+Public License Version 2. (www.gnu.org/copyleft/gpl.html)
+
+For more information read the RRD manpages
+** 4、安装ganglia-3.1.7 （管理端gmetad）
+./configure --prefix=/usr/local/ganglia --sysconfdir=/etc/ganglia --with-librrd=/usr/local/rrdtool --with-gmetad --enable-gexec --enable-status
+
+
+./configure --prefix=/usr/local/ganglia --sysconfdir=/etc/ganglia --with-librrd=/usr/local/rrdtool --with-libapr=/usr/local/apr --with-libexpat=/usr/local/expat --with-libconfuse=/usr/local/confuse --with-gmetad --enable-gexec --enable-status
+
+***注意：
+ （1）--prefix自定义安装目录是，编译提示如果使用默认的/etc/ganglia目录放置文件，必须在configure是明确指定 --sysconfdir=/etc/ganglia 参数。
+ （2）如果将配置文件放在PREFIX/etc目录下，则必须将环境变量GANGLIA_ACK_SYSCONFDIR设为1，即：
+  GANGLIA_ACK_SYSCONFDIR=1 ./configure --prefix=/usr/local/ganglia --with-librrd=...........
+** 配置ganglia管理端
+cp -a /usr/local/ganglia/sbin/* /usr/sbin
+在安装目录中：
+mkdir -p /var/www/html/ganglia/  # make sure you have apache installed
+cp -a web/* /var/www/html/ganglia/   # this is the web interface
+cp gmetad/gmetad.init /etc/rc.d/init.d/gmetad  # startup script
+cp gmond/gmond.init /etc/rc.d/init.d/gmond
+mkdir /etc/ganglia  # where config files go
+gmond -t | tee /etc/ganglia/gmond.conf  # generate initial gmond config
+cp gmetad/gmetad.conf /etc/ganglia/  # initial gmetad configuration
+mkdir -p /var/lib/ganglia/rrds  # place where RRDTool graphs will be stored
+chown nobody:nobody /var/lib/ganglia/rrds  # make sure RRDTool can write here.
+chkconfig --add gmetad  # make sure gmetad starts up at boot time
+chkconfig --add gmond # make sure gmond starts up at boot time
+*** 相关问题
+图形显示不全，
+yum install php-gd
+** 配置Ganglia客户端
+*** 1、编译
+./configure  --sysconfdir=/etc/ganglia --with-librrd=/usr/local/rrdtool --enable-gexec --enable-status
+make -j8
+make install
+*** 2、将gmond加入系统服务
+
+cp {ganglia解压目录}gmond/gmond.init /etc/init.d/gmond
+*** 3、将gmond命令加入到/usr/sbin/目录【可选】
+默认安装没有指定--prefix=/opt/.... 目录的话默认安装在/usr/sbin中
+如果指定的话到指定目录的/opt/sbin目录下拷贝gmond命令到/usr/sbin中，例如：
+cp /usr/local/ganglia/sbin/gmond /usr/sbin/
+*** 4、生成gmond的默认配置文件
+gmond --default_config > /etc/ganglia/gmond.conf
+*** 5、将gmond给 chkconfig托管
+chkconfig –add gmond
+*** 6、修改gmond配置文件/etc/ganglia/gmond.conf
+cluster {
+		name = "test cluster"
+		owner = "nobody"
+		latlong = "unspecified"
+		url = "unspecified"
+}
+*** 7、开启gmond服务
+service gmond start
+Starting GANGLIA gmetad: [ OK ]
+
+** 访问Ganglia资源
+如果服务器地址为：192.168.3.54 [目前实验室地址]
+
+浏览器中输入：http://192.168.3.54/ganglia   访问即可
+
+* CentOS开放端口  --2011年05月21日 16:31:31 
+在我们使用CentOS系统的时候，CentOS防火墙有时是需要改变设置的。CentOS防火墙默认是打开的，设置CentOS防火墙开放端口方法如下：
+
+打开iptables的配置文件：
+vi /etc/sysconfig/iptables
+修改CentOS防火墙时注意：一定要给自己留好后路,留VNC一个管理端口和SSh的管理端口
+
+下面是一个iptables的示例：
+
+# Firewall configuration written by system-config-securitylevel
+# Manual customization of this file is not recommended.
+ *filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+:RH-Firewall-1-INPUT - [0:0]
+-A INPUT -j RH-Firewall-1-INPUT
+-A FORWARD -j RH-Firewall-1-INPUT
+-A RH-Firewall-1-INPUT -i lo -j ACCEPT
+-A RH-Firewall-1-INPUT -p icmp –icmp-type any -j ACCEPT
+-A RH-Firewall-1-INPUT -p 50 -j ACCEPT
+-A RH-Firewall-1-INPUT -p 51 -j ACCEPT
+-A RH-Firewall-1-INPUT -m state –state ESTABLISHED,RELATED -j ACCEPT
+-A RH-Firewall-1-INPUT -m state –state NEW -m tcp -p tcp –dport 53 -j ACCEPT
+-A RH-Firewall-1-INPUT -m state –state NEW -m udp -p udp –dport 53 -j ACCEPT
+-A RH-Firewall-1-INPUT -m state –state NEW -m tcp -p tcp –dport 22 -j ACCEPT
+-A RH-Firewall-1-INPUT -m state –state NEW -m tcp -p tcp –dport 25 -j ACCEPT
+-A RH-Firewall-1-INPUT -m state –state NEW -m tcp -p tcp –dport 80 -j ACCEPT
+-A RH-Firewall-1-INPUT -m state –state NEW -m tcp -p tcp –dport 443 -j ACCEPT
+-A RH-Firewall-1-INPUT -j REJECT –reject-with icmp-host-prohibited
+COMMIT
+
+修改CentOS防火墙需要注意的是，你必须根据自己服务器的情况来修改这个文件。
+
+举例来说，如果你不希望开放80端口提供web服务，那么应该相应的删除这一行：
+-A RH-Firewall-1-INPUT -m state –state NEW -m tcp -p tcp –dport 80 -j ACCEPT
+
+全部修改完之后重启iptables:
+service iptables restart
+
+你可以验证一下是否规则都已经生效：iptables -L
+
+这样，我们就完成了CentOS防火墙的设置修改。
+
+* CentOS安装Emacs  --2011年05月21日 08:45:18 
+**安装基本工具 
+sudo yum install texinfo
+sudo yum groupinstall "Development Tools"
+sudo yum groupinstall "X Software Development"
+sudo yum install giflib-devel
+sudo yum install librsvg2-devel
+sudo yum install ncurses-devel
+** 编译过程
+***1、预编译
+./configure --prefix=/usr --enable-font-backend --with-xft --with-freetype --with-x-toolkit=gtk
+或者
+./configure --prefix=/home/korland/emacs23 --with-xft  --with-freetype --enable-font-backend --with-x-toolkit=gtk --with-freetype2 --with-x --with-xpm --with-jpeg --with-tiff --with-gif --with-png --build=i686-pc-linux-gnu
+***2、编译
+****As user
+make bootstrap && make info && sudo make install && make distclean
+****As root
+make bootstrap && make info && make install && make distclean
+
+* CentOS安装java相关工具环境变量配置 --2011年05月21日 08:44:51 
+在/etc/profile中配置如下：
+
+export JAVA_HOME=/usr/java/latest
+export PATH=$JAVA_HOME/bin:$PATH
+export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+export JRE_HOME=/usr/java/latest
+export TOMCAT_HOME=/usr/tomcat
+export ANT_HOME=/usr/local/ant
+export PATH=${PATH}:${ANT_HOME}/bin
+
+* CentOS安装bash-complation --2011年05月15日 11:26:20 
+1、http://packages.sw.be/bash-completion/   下载相应版本的安装包
+2、rpm -ivh bash-completion-20060301-1.el5.rf.noarch.rpm
+3.在~/.bashrc中添加如下内容 
+
+vim ~/.bashrc 
+
+if [ -f /etc/bash_completion ]; then 
+
+. /etc/bash_completion 
+
+fi 
+
+* Globus安装
+** yum install perl-XML-Parser
+
+** 运行make install后提示
+globus@globus_serv ~/soft/gt4.2.1-all-source-installer $make install
+ln -sf /usr/local/globus-4.2.1/etc/gpt/packages /usr/local/globus-4.2.1/etc/globus_packages
+/usr/local/globus-4.2.1/sbin/gpt-postinstall
+running /usr/local/globus-4.2.1/setup/globus/setup-globus-gram-job-manager..[ Changing to /usr/local/globus-4.2.1/setup/globus ]
+Creating state file directory.
+Done.
+Reading gatekeeper configuration file...
+Warning: Host cert file: /etc/grid-security/hostcert.pem not found.  Re-run
+         setup-globus-gram-job-manager after installing host cert file.
+Determining system information...
+Creating job manager configuration file...
+Done
+..Done
+** Setting up security on your first machine
+password for CA:globus
+* 添加新用户 --2011年05月14日 11:40:49 
+adduser xxx
+groupadd xxx
+*---yum的使用---2008年11月12日 | 11:14:33
+**RPM-GPG-KEY导入
+在使用yum进行install时，经常会出现下面的错误
+warning: rpmts_HdrFromFdno: Header V3 DSA signature: NOKEY, key ID 1ac70ce6
+导致安装不能进行。解决方法如下：
+
+rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY*
+
+**rmp包的更新
+***检查可更新的rpm包
+yum check-update
+***更新所有的rpm包
+yum update
+***更新指定的rpm包，如更新kernel和kernel source
+yum update kernel kernel-source
+***大规模的版本升级，与yum update不同的是，连旧的淘汰的包也升级
+yum upgrade
+***安装rpm包，如安装xmms-mp3
+yum install xmms-mp3
+***删除rpm包，包括有依赖性的包
+yum remove licq
+      同时会删除licq-gnome licq-qt licq-text
+**rpm暂存(/var/cache/yum/)相关参数
+***清除暂存中的rpm包文件
+yum clean packages
+***清除暂存中的rpm头文件
+yum clean oldheaders
+***清除暂存中的头文件和包文件
+yum clean 或者 yum clean all
+**包列表相关参数
+***列出资源库中可以安装或者更新的rpm包
+yum list
+***列出资源库中特定的可以安装或更新以及已经安装的rpm包
+yum list mozilla
+yum list mozilla*
+***列出资源库中所有可以更新的rpm包
+yum list updates
+***列出已经安装的所有rpm包
+yum list installed
+***列出已经安装的但是不包含在资源库中的rpm包
+yum list extras
+    就是通过其它网站下载安装的包
+**rmp包信息显示
+***列出资源库中所有可以安装或更新的rpm包信息
+yum info
+***列出资源库中指定的可以安装或更新以及已经安装的rpm包的信息
+yum info mozilla
+yum info mozilla*
+***列出资源库中所有可以更新的rpm包的信息
+yum info updates
+***列出已经安装的但是不包含在资源库中的rpm包的信息
+yum info extras
+**搜索rpm包
+***搜索特定包
+yum search package_name
+***搜索包含特定文件名的包
+yum provides name

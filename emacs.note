@@ -1,0 +1,1123 @@
+				SuiJinXin Emacs Notes		-*- outline -*-
+* 以Emacs的色彩风格输出代码的html页面 --2011年09月14日 17:45:35  
+经常要贴自己的代码给别人看，自然，就非常希望让别人看到自己在Emacs中精心配置好的颜色、代码风格，以便于阅读、理解代码。不过，这似乎有点难度。现在好了，用上htmlize.el这个扩展，就可以把代码当前的颜色、代码风格，直接转化为html页面。这样，别人看起来会舒服很多，当别人认为你的代码有用的时候，再叫你拿txt文件也不迟。
+
+可以先看看作者的例子，htmlize.el.html就是htmlize.el的彩色显示，这样，可读性是不是比纯文本的htmlize.el强多了？
+
+把htmlize.el扔到你的path里，并在.emacs里加入以下语句即可：
+
+;; set htmlize
+(require ‘htmlize)
+
+这个扩展可以有如下几种使用方法：
+
+1) M-x htmlize-buffer
+把当前的buffer转为一个html文件，并保留当前你Emacs的色彩定义。运行这个命令后，Emacs会跳转到一个新的buffer里，你把这个buffer保存下来即可。
+
+2) M-x htmlize-file
+这个命令会在mini-buffer里提示输入你需要转换的文件，自动帮你转换好，并保存为.html。
+
+3) M-x htmlize-many-files
+这个命令和2)差不多的功能，不过可以让你同时转一批文件。
+
+4) M-x htmlize-many-files-dired
+这个命令可以把你标记好的目录下的所以文件都转成html。
+
+
+* Emacs字符编码相关指令 --2011年07月 5日 13:04:40 
+在Vim中，我们可以通过set fencs=utf-8,gbk告诉它按照先utf-8后gbk的顺序自动识别打开文件的字符编码。Emacs也有一组字符编码相关指令，整理如下：
+
+指令全名：set-buffer-file-coding-system
+指令作用：改变当前buffer的编码
+调用方法：(以目标编码gbk为例)
+C-x <RET> f gbk <RET>
+该指令还可以用于改变当前buffer的换行习惯(编码参数用dos或unix，对应\r\n或\n)。
+
+指令全名：universal-coding-system-argument
+指令作用：指定紧随其后的命令(如C-x C-f或C-x C-w等)所采用的编码
+调用方法：(以目标编码gbk为例)
+C-x <RET> c gbk <RET>
+
+指令全名：revert-buffer-with-coding-system
+指令作用：用指定编码重读当前buffer(如果打开时用错了编码)
+调用方法：(以目标编码gbk为例)
+C-x <RET> r gbk <RET>
+
+指令全名：recode-region
+指令作用：将以错误编码解码的选区以指定编码重新解码
+调用方法：(以目标编码gbk为例)
+M-x recode-region <RET> gbk <RET> utf-8 <RET>
+
+除了这些操作外，还有一种方法，那就是在文件开始的部分给出如下形式的指令，直接告诉编辑器在打开和保存时应采用的编码：
+-*- coding: gbk -*-
+接触过Python的同学是不是觉得很眼熟?
+
+[补充] 查看当前编码选择的命令为：
+M-x describe-coding-system <RET> 或 C-h C <RET>
+也可在回车前输入具体的编码名称(如gbk)以查看详细说明。
+
+
+* Emacs常用升级地址 --2010年12月11日 12:46:03 
+**　Git升级地址
+git clone git://repo.or.cz/emacs.git emacs
+git clone git://git.sv.gnu.org/emacs emacs
+
+* Emacs列模式操作 2010年11月 6日 17:41:50 
+** 原始列模式
+emacs以C-x r开头的命令来进行矩形操作。先用C-space或者C-@设一个mark，移动光标到另一点，用以下命令进行列操作：
+
+C-x r k 剪切一个矩形块
+C-x r y 粘贴一个矩形块
+C-x r o 插入一个矩形块
+C-x r c 清除一个矩形块(使其变成空白)
+C-x r t 在选定区域的所有列前插入样的字符
+
+** cua-mode支持的可视化列模式
+除了emacs本身支持的列模式外，emacs还可以通过cua-mode支持一种可视化的列模式。在cua- mode下，按[C-return]会进入cua rectangle模式。在这个模式下可以通过鼠标点击确认起点，然后通过光标键来选中一个rect范围，这个rect会用另外的颜色显示出来。之后我们就可以很方便地对这个rect进行操作。比如[M-up],[M-down],[M-left],[M-right]可以移动这个rect，[C- return]可以取消这个rect，[C-space]可以退出cua-rect模式并激活普通模式下的选择。
+
+cua-mode下可以用以下命令进行列操作：
+直接输入字符: 在每行前(或后)都插入这个字符
+[M-b]: 用空格(tabs或者spaces)替换所有rect中的字符
+[M-c]: 去掉所有行左侧的空格
+[M-f]: 用单个字符替换所有rect中的字符(提示输入一个字符)
+[M-i]: 对每行中第一个找到的数字进行加1操作(自动把0x开头的当作十六进制数字)
+[M-k]: 剪切rect
+[M-l]: 把rect中的内容全部转换为小写
+[M-m]: 拷贝rect
+[M-n]: 用一串自增的数字替换rect中的每一行(这个功能可以用来给每行编号)
+[M-o]: rect的内容右移，选中的rect用空格填充
+[M-r]: 用字符串替换符满足正则表达式的字符串
+[M-R]: 上下反转
+[M-s]: 把rect中的每一行替换为一个字符串(提示输入)
+[M-t]: 把rect整个替换为一个字符串(提示输入)
+[M-u]: 把rect中的内容全部转换为大写
+[M-|]: 对rect执行一个shell命令
+还有一些其他的命令可以直接看cua-base.el(emacs22之后已经自带cua-mode)。
+本文来自CSDN博客，转载请标明出处：http://blog.csdn.net/meteor1113/archive/2009/07/15/4349274.aspx
+* Emacs自动排版  2010年10月30日 21:34:26 
+C-x h --全选
+C-M-\ --是排版
+* 在Emacs中匹配括号之间跳转 --2010年10月 9日 17:41:36 
+快捷键为：C-M-n  C-M-p
+* Windows下emacs安装AucTex的方法  
+* Gentoo中安装Emacs CVS需要的注意事项 2010年04月 9日 09:00:31 
+  ./configure --prefix=/usr   指定emacs的安装路径为/usr/bin
+   只是./configure的话Emacs自动指定的路径为/usr/local的bin目录
+* Ubuntu中需要安装的图像库  2009年10月29日 10:10:45 
+sudo aptitude install libxpm-dev libgif-dev libungif4-dev libtiff4-dev 
+
+* 在died中批量编译*.el文件 2009年09月11日 17:47:37 
+  在dired模式下，*.然后输入el选择所有后缀是el的文件，然后按B编译
+* Emacs编译过程中不大熟悉的三个选项
+Configured for `i686-pc-linux-gnu'.
+
+  Where should the build process find the source code?    /home/korland/cvs/emacs
+  What operating system and machine description files should Emacs use?
+        `s/gnu-linux.h' and `m/intel386.h'
+  What compiler should emacs be built with?               gcc -g -O2 -Wno-pointer-sign
+  Should Emacs use the GNU version of malloc?             yes
+      (Using Doug Lea's new malloc from the GNU C Library.)
+  Should Emacs use a relocating allocator for buffers?    yes
+**  Should Emacs use mmap(2) for buffer allocation?         no
+  What window system should Emacs use?                    x11
+  What toolkit should Emacs use?                          GTK
+  Where do we find X Windows header files?                Standard dirs
+  Where do we find X Windows libraries?                   Standard dirs
+**  Does Emacs use -lXaw3d?                                 no
+  Does Emacs use -lXpm?                                   yes
+  Does Emacs use -ljpeg?                                  yes
+  Does Emacs use -ltiff?                                  yes
+  Does Emacs use a gif library?                           yes -lgif
+  Does Emacs use -lpng?                                   yes
+  Does Emacs use -lrsvg-2?                                yes
+  Does Emacs use -lgpm?                                   yes
+  Does Emacs use -ldbus?                                  yes
+  Does Emacs use -lfreetype?                              yes
+**  Does Emacs use -lm17n-flt?                              no
+**  Does Emacs use -lotf?                                   no
+  Does Emacs use -lxft?                                   yes
+  Does Emacs use toolkit scroll bars?                     yes
+
+* 自定义快速打开一个文件 2008年12月25日 10:34:55
+M-x在mini-buffer中如入gtd快速打开mygtd.org文件：
+
+(defun gtd ()
+   (interactive)
+   (find-file "c:/homes/charles/gtd/gtd/mygtd.org")
+ )
+
+* Windows注册表设置  2008年12月14日 16:14:53
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\GNU\Emacs]
+"Emacs.Background"="Black"
+"Emacs.Foreground"="Wheat"
+"Emacs.ScrollBars"="OFF"
+"Emacs.MenuBar"="OFF"
+"Emacs.ToolBar"="OFF"
+"Emacs.Geometry"="125x43+0+0"
+
+* 添加右键菜单 2008年12月14日 16:15:01
+
+在Windows XP资源管理器的右键菜单中加入"用 Emacs 编辑"
+
+Emacs 自带的 emacsclient.exe 能用了，不必装 gnuserv 了。
+
+** .emacs 配置
+
+(server-start)
+
+** 添加右键菜单
+
+在注册表\HKEY_CLASSES_ROOT\AllFilesystemObjects\shell\下面新建一项
+"Emacs"（或者你想在右键菜单中出现的字样，比如“用 Emacs 编辑”），再在下
+面新建 "command" 项，看起来应该是这样：
+
+\HKEY_CLASSES_ROOT\AllFilesystemObjects\shell\Emacs\command\
+
+然后把 command 项右边的默认值设为 Path\emacsclientw.exe，并加上"%1"，看起来像
+这样：
+
+C:\emacs\bin\emacsclientw.exe -n "%1"
+
+注意%1上面要加引号，以免无法正确的将含有空格的文件名传给emacsclientw。 
+
+完成这一步，就在所有类型的文件（包括文件夹）的右键菜单中加入了一个名为
+"Emacs" 的选项。
+* Emacs和vim 替换windows文件中的换行符^M 2008年12月14日 | 15:22:54
+** Emacs
+
+   M-x info				查看info目录
+   C-x C-d				快速进入info目录
+   t   					全选
+   Q					查询
+   C-Q C-M				输入查询关键字“^M”
+   RET 					替换为空
+   Y					无需提示，全部替换
+   C-x s				全部保存
+   ！  					无需提示，所有文件保存
+
+** Vim
+:%s/ctrl-v ctrl-m/\r/g
+
+*---Muse Notes---2008年11月30日 | 15:42:36				
+** css文件的存放目录
+
+    放在发布文件的同级目录下即可
+    
+
+*---一些Tips---2008年11月29日 | 10:34:09
+**加入自己的 Info 目录
+(dolist (path '("/media/hdb1/Programs/Emacs/home/info/perlinfo"
+                "/media/hdb1/Programs/Emacs/home/info"
+                "~/info" "~/info/perlinfo"))
+  (add-to-list 'Info-default-directory-list path))
+
+**加入的这些目录，可以在 shell 中用 tab 补全命令。
+(add-to-list 'exec-path "~/bin")
+*---Building and install emacs23 from cvs---2008年11月23日 | 13:53:38
+
+Some of the files that are included in the Emacs tarball, such as
+byte-compiled Lisp files, are not stored in the CVS repository.
+Therefore, to build from CVS you must run "make bootstrap"
+instead of just "make":
+
+  $ cvs update -dP
+  $ make bootstrap
+
+Of course, if this is the first time you go through it, you'll need to do
+./configure before the "make bootstrap".
+
+Normally, it is not necessary to use "make bootstrap" after every CVS
+update.  "make" should work in 90% of the cases and be much quicker.
+
+  $ make
+
+(If you want to install the Emacs binary, type "make install" instead
+of "make" in the last command.)
+
+Occasionally the file "lisp/loaddefs.el" (and similar automatically
+generated files, such as esh-groups.el, and *-loaddefs.el in some
+subdirectories of lisp/, e.g. mh-e/ and calendar/) will need to be
+updated to reflect new autoloaded functions.  If you see errors (rather
+than warnings) about undefined lisp functions during compilation, that
+may be the reason.  Another symptom may be an error saying that
+"loaddefs.el" could not be found; this is due to a change in the way
+loaddefs.el was handled in CVS, and should only happen once, for users
+that are updating old CVS trees.  Finally, sometimes there can be build
+failures related to *loaddefs.el (e.g. "required feature `esh-groups'
+was not provided").  In that case, follow the instructions below.
+
+To update loaddefs.el (and similar files), do:
+
+  $ cd lisp
+  $ make autogen-clean
+  $ make autoloads
+
+If either of the above partial procedures fails, try "make bootstrap".
+
+Very occasionally changes in the source can introduce
+incompatibilities with previous builds.  If a bootstrap fails, as a
+last resort try "make maintainer-clean" before configuring and
+bootstrapping again.  If CPU time is not an issue, the most thorough
+way to rebuild, and avoid any spurious problems, is always to use this
+method.
+
+Users of non-Posix systems (MS-Windows etc.) should run the
+platform-specific configuration scripts (nt/configure.bat, config.bat,
+etc.) before "make bootstrap" or "make"; the rest of the procedure is
+applicable to those systems as well.
+
+Questions, requests, and bug reports about the CVS versions of Emacs
+should be sent to emacs-pretest-bug@gnu.org rather than gnu.emacs.help
+or gnu.emacs.bug.  Ideally, use M-x report-emacs-bug RET which will
+send it to the proper place.
+
+Because the CVS version of Emacs is a work in progress, it will
+sometimes fail to build.  Please wait a day or so (and check the bug
+and development mailing list archives) before reporting such problems.
+In most cases, the problem is known about and is just waiting for
+someone to fix it.
+
+
+Note on using SSH to access the CVS repository from inside Emacs
+----------------------------------------------------------------
+
+Write access to the CVS repository requires using SSH v2.
+
+If you execute cvs commands inside Emacs, specifically if you use
+pcl-cvs, output from CVS may be lost due to a problem in the
+interface between ssh, cvs, and libc.  Corrupted checkins are
+also known to have happened.
+
+To fix the problem, save the following script into a file, make it
+executable, and set CVS_RSH to the file name of the script:
+
+#!/bin/bash
+exec 2> >(exec cat >&2 2>/dev/null)
+exec ssh "$@"
+
+This may be combined with the following entry in ~/.ssh/config to
+simplify accessing the CVS repository:
+
+Host subversions.gnu.org
+     Protocol 2
+     ForwardX11 no
+     User YOUR_USERID
+
+*---windows下编译安装emacs23---2008年11月22日 | 10:07:20
+**准备工作：
+***1、准备编译工具：
+ Mingw:
+http://www.mingw.org/
+或者(Cygwin)（不推荐用）
+http://www.cygwin.com/
+***2、准备GnuWin32工具
+You will also need a copy of the Posix cp, rm and mv programs.  These
+and other useful Posix utilities can be obtained from one of several
+projects:
+
+ http://gnuwin32.sourceforge.net/              ( GnuWin32 )
+ http://unxutils.sourceforge.net/              ( UnxUtils )
+***3、准备支持图形库的相关工具库：
+Several images library is necessory for images support in Emacs. All of them can be downloaded at
+
+ http://gnuwin32.sf.net.
+
+Both the bin packages(for .dll files) and the lib or src packages(for .h files) 
+should be downloaded first. Files of .dll is for runtime, and .h for compiling. 
+
+****JPEG support 
+Required files: jpeg62.dll, jconfig.h (in bin & lib packages) 
+Current: jpeg-6b-4-bin.zip, jpeg-6b-4-lib.zip 
+****GIF support 
+Required files: libungif.dll, gif_lib.h (in bin & src packages) 
+Current: libungif-4.1.0b1-bin.zip, libungif-4.1.0b1-src.zip 
+****TIFF support 
+Required files: libtiff3.dll, tiffio.h, tiff.h, tiffvers.h (in bin & lib packages) 
+Current: tiff-3.7.2-bin.zip, tiff-3.7.2-lib.zip 
+****XPM support 
+Required files: xpm4.dll, X11/xpm.h, simx.h (in bin & lib & src packages) 
+Current: xpm-3.5.1-1-bin.zip, xpm-3.5.1-1-lib.zip, xpm-3.5.1-1-src.zip 
+****PNG support 
+Required files: libpng13.dll, png.h, pngconf.h (in bin & lib packages) 
+Current: libpng-1.2.8-bin.zip, libpng-1.2.8-lib.zip 
+****Zlib (required by PNG) 
+Required files: zlib1.dll (in bin packages) 
+Current: zlib-1.2.2-bin.zip 
+
+Assuming all required .h files are in C:\free_ware\gnuwin32\include.
+Run cmd.exe, then to cvs-emacs\nt directory: 
+
+      emacs\nt> configure.bat -h
+      emacs\nt> configure.bat --with-gcc --cflags -ID:/free_ware/GnuWin32/include
+      emacs\nt> dos2unix makefile
+      
+Copy all .dll files to the directory EMACS_INSTALL_DIR\bin, so this Emacs will support images
+**下载：
+cvs -z3 -d:pserver:anonymous@cvs.savannah.gnu.org:/sources/emacs -kb co emacs
+**更新：
+cvs update
+
+**编译：
+configure.bat --with-gcc --no-debug --no-cygwin --cflags -ID:/free_ware/GnuWin32/include
+
+mingw32-make bootstrap
+
+mingw32-make info
+(此处出错，修改后可以编译，但是没有确认是哪个在起作用，有待验证：
+1、mingw32-make从bin/拷贝出来改成make又拷贝回去
+2、将texinfo-4.8-bin.zip压缩包中bin/目录下所有的文件都拷贝到mingw/bin目录下，而不是单独拷贝makeinfo.exe)
+mingw32-make install INSTALL_DIR=C:/Emacs
+
+**复制图形库文件
+将C:\MinGW\bin中的jpeg62.dll、libpng13.dll、libtiff3.dll、libungif.dll、libXpm-noX4.dll和zlib1.dll
+复制到EMACS_INSTALL_DIR\bin下
+
+*---删除行末的多余空白字符---2008年10月22日 | 09:03:23
+
+M-x delete-trailing-whitespace
+
+*---Emacs输入法的调用及设置---2008年10月22日 | 09:00:05
+
+C-\    --------------切换Emacs内置输入法
+(setq default-input-method "eim-wb")   ;;将默认输入法设置为五笔输入
+
+*---Emacs Dried mode---2008年09月28日 | 16:47:48
+**---Mark && Flag
+    dired 最方便的一点就是可以对许多文件进行标记，并进行批量操作。标记的方法有很多，最普通的标记就是 d 为当前文件贴上删除标签，之后可以使用 x 来真正删除所有贴上删除标签的文件。
+
+    dired 还提供了许多预定义的方便的标记操作(当使用 C-u 传递一个前缀参数时，他们执行相反操作，即去掉标记)，例如：
+
+    * # 为所有自动保存的文件(通常是文件名开始和结尾都是 # 的文件)贴上删除标签。
+    * ~ 为所有备份文件(即文件名以 ~ 结尾的文件，Emacs 和 vi 等编辑器默认情况下都会产生这样的文件)贴上删除标签。
+    * & 为“垃圾文件”(看 dired-garbage-files-regexp 的值可以知道 dired 把哪些文件当作了垃圾文件)贴上删除标签。
+
+    通常这些命令可以方便地帮你清理垃圾，如果还不满意，可以使用 % d REGEXP <RET> 来输入自己的正则表达式，匹配到的文件会被贴上删除标签。
+
+    当然，能用的标签并不止是 D (即删除标签)，几乎任何一个字符都可以使用，不过最常用的还是 * ， m 命令即是以 * 标记当前文件。同样，dired 提供了很多方便的标记操作(这些命令在传递一个前缀参数的时候都会执行相反的操作，例如 C-u * * 会去掉所有可执行文件的标记)：
+
+    * * * 标记所有可执行文件。
+    * * @ 标记所有符号链接。
+    * * / 标记所有目录(不包括 . 和 .. )。
+    * * s 标记所有文件(不高考 . 和 .. )。
+    * * . 标记具有给定扩展名的文件。
+    * % m REGEXP <RET> 或 * % REGEXP <RET> 标记所有匹配到给定的正则表达式的文件。
+    * % g REGEXP <RET> 标记所有文件 内容 匹配到给定的正则表达式的文件。
+
+    另外，还有一些相关的命令：
+
+    * u 去除当前行的标记。
+    * <DEL> 上移一行并去除该行的标记。
+    * U 去除所有标记。
+    * * ? MARKCHAR 或 M-<DEL> 去除所有以 MARKCHAR 标记的文件的标记，如果传递一个前缀参数，则会对每一个文件要求你确认是否去除标记。
+    * t 交换标记，即所有原来标记为 * 的文件被置于未标记状态，原来未标记的文件被标记为 * ，原来有其他标记的文件不受影响。
+
+    上面的操作都是使用 * 进行标记，但是 dired 可以使用更多的字符进行标记，只是没有提供相应的快捷键操作而已，你可以先以 * 标记，然后使用 * c OLD-MARKCHAR NEW-MARKCHAR 来把 * 标记变换成其他标记，几乎任何字符(当然不包括中文这种多字节的字符)都可以作为标记，不过空格被特殊对待，用于表示所有未标记的文件。
+
+    列举了这么多命令，多少有些枯燥，作为一个例子，我们来把当前目录下的所有备份文件移动到 ~/backup 目录下。假设当前目录已经有一些文件被你以 D 标记，但是暂时还不想删除：
+
+   1. 选择个临时标记，比如 t ，只要保证当前 buffer 里面没有已经存在的这种标记就行了。
+   2. * c D t 把当前所有 D 标签换为 t 标签。
+   3. ~ 以 D 标记所有备份文件。
+   4. * c D * 把 D 标签换为 * 标签。
+   5. R ~/backup <RET> 来把所有标记为 * 的文件移动到 ~/backup 目录里面。
+   6. * c t D 恢复原来的 D 标记。
+
+    当然这要假设你原来没有设定其他的 * 标记，要不然你也可以再添加一个临时标记。总之操作和清晰也很方便，感觉像在汇编语言里面使用寄存器一样，大多数批量操作都是针对 * 标记的，所以对某个标记操作之前需要把他先转换为 * 标记。
+
+    另外，还有一个非常强大的标记的方法，绑定到 M-( 或 * ( 上。它可以让你使用断言来决定标记哪些文件。 C-h f dired-mark-sexp RET 可以得到详细的文档。这个功能非常强大，有点类似于 find 程序，例如，标记所有没有编译的Elisp 文件(如果编译了，那么会有一个同名，但是扩展名为 .elc 的文件存在) 的方法是输入这个断言： (and (string-match "\\.el$" name) (not (file-exists-p (concat name "c")))) 。
+**---文件操作---
+    dired 内建了很多文件操作，对于操作的文件有一个统一的约定，按照顺序是：
+
+   1. 如果你通过 C-u 传递一个前缀参数 N ，那么它对从当前行开始的 N 行执行操作( N 也可以是负数)。
+   2. 如果有被标记为 * 的文件，则以这些文件为操作对象。
+   3. 只对当前光标所在的文件进行操作。
+
+***常用操作
+
+    这些命令全部绑定到大写字母上，记忆也非常方便：
+
+    * C 拷贝文件。把 dired-recursive-copies 设为非 nil 的值可以递归拷贝目录，通常我们设定为 top ，这表示对于顶层目录 dired 会先进行询问是否要递归拷贝，而其中的子目录则不再询问。如果嫌询问太麻烦，可以直接设置为 always 。
+    * D 删除文件。类似的有一个 dired-recursive-deletes 变量可以控制递归删除。
+    * R 重命名文件，也就是移动文件。
+    * H 创建硬链接。
+    * S 创建软链接。
+    * M 修改权限位，即 shell 里面的 chmod 命令。
+    * G 修改文件所属的组。
+    * O 修改文件的所有者。
+    * T 修改文件的修改时间，类似于 shell 命令 touch 。
+    * P 打印文件。
+    * Z 压缩或解压文件。
+    * L 把 Elisp 文件加载进 Emacs 。
+    * B 对 Elisp 文件进行 Byte compile 。
+    * A 对文件内容进行正则表达式搜索，搜索会在第一个匹配的地方停下，然后可以使用 M-, 搜索下一个匹配。
+    * Q 对文件内容进行交互式的正则表达式替换。
+
+***shell 命令
+
+    除了这些操作，还可以使用 ! 来执行 shell 命令。这里介绍了自动猜测 shell 命令的办法，就类似于通常的文件管理器里面以关联的程序打开了。
+强大的重命名功能
+
+    dired 有一个文件名转换的理念，所以转换，并不一定是重命名，还可以是复制和创建链接。所以，除了 % u 和 % l 重命名原文件为大写、小写外，一个使用正则表达式进行转换的命令提供了四个选项： % X 其中 X 可以是 R , C , H 和 S ，分别代表重命名、复制、创建硬链接和创建软链接，他们使用匹配和替换的机制，这有点像 rename 这个程序，例如： % R \.[^.]*$ <RET> .1\& <RET> 给原来的文件名加个标号 1 ，把 foo.txt 变成 foo.1.txt 。
+
+    另外，dired 还有一个叫做 Wdired 的扩展可以直接在 dired 的 buffer 里面编辑文件名来达到重命名的效果。使用 M-x wdired-change-to-wdired-mode 进入编辑模式，这个时候可以直接像编辑普通文本一样编辑文件名，还可以添加路径来实现把文件移动到其他目录。除了文件名可以编辑以外，其他部分被标记为只读，但是如果把 wdired-allow-to-change-permissions 设为 t 的话，还可以编辑文件的权限位。编辑完成之后使用 C-c C-c 来应用所做的编辑。非常方便。
+
+**---排序和过滤---
+    dired 有方便的排序功能，这里介绍了如何方便地使用排序功能。另外 dired 还有一个 k 用于去掉不想显示出来的文件，它并不删除磁盘上的文件，只是临时从 dired 的 buffer 中去掉他们， g 刷新一下它们又会显示出来，这样，首先用强大的标记功能进行标记，然后使用 k 去掉，就实现了过滤的功能。
+
+**---子目录功能---
+    dired 允许同时操作当前目录和子目录。在 dired-listing-switches 里面加入 R 选项就可以显示子目录，如果只是想临时显示某个子目录的内容，对该目录执行 i 操作就会把该子目录的内容添加到 dired 当前 buffer 的末尾并把光标移动到那里，dired 在移动之前会先设置一个 mark ，所以可以使用 C-u C-<SPC> (对于我来说，我把 set-mark-command 绑定到了 M-<SPC> 上，这里自然就是使用
+    * + 创建目录
+    * w 复制文件名，如果通过 C-u 传递一个前缀参数 0 ，则复制决定路径名，如果只是 C-u 则复制相对于 dired 当前目录的相对路径。
+    * I 把当前文件以 info 文档的格式打开。
+    * N 把当前文件以 man 格式打开(使用 WoMan)。
+    * Y 为所有标记的文件创建一个到指定目录的相对符号连接(即使用相对路径进行引用，而不是绝对路径)。
+
+*---Emacs X windows下启动参数---2008年09月28日 | 13:47:54
+
+emacs -nw				命令行下启动
+emacs -fs				图形启动时最大化
+*---Emacs打开文件---2008年09月24日 | 19:21:30
+    用C-x C-f打开文件时用//或~/可屏蔽此符号前的路径，省去删除当前路径的麻烦
+    如C-x C-f默认是指向~/的，此时想打开/etc/apt/fstab文件，输入~//etc/apt/fstab即可
+    如果当前路径为/var/，打开自己home目录下的aa.txt文件，输入/var/~/aa.txt
+
+*---CVS Emacs23 for ubuntu---2008年09月22日 | 10:57:59
+
+sudo apt-get install ssh cvs # cvs client
+sudo apt-get install texinfo # for man package
+
+############################################################
+
+export CVS_RSH="ssh"
+cvs -z3 -d:pserver:anonymous@cvs.sv.gnu.org:/cvsroot/emacs co emacs #get source
+
+############################################################
+
+sudo apt-get install libgpmg1-dev libungif4-dev libpng12-dev libgd2-xpm-dev libtiff4-dev libjpeg62-dev librsvg2-dev
+sudo apt-get install libgtk2.0-dev libgtk2.0-doc
+sudo apt-get install build-essential
+sudo apt-get build-dep emacs
+sudo apt-get install xserver-xorg-dev
+sudo apt-get install xorg-dev
+sudo apt-get install libncurses5
+sudo apt-get install libncurses5-dev # env of compiling
+
+############################################################
+**安装之前准备工作
+
+1、安装ssh和texinfo
+2、安装libncurses5-dev
+3、安装libgtk2.0-dev
+4、安装一些图形库支持
+sudo apt-get install libxpm-dev libjpeg62-dev libgif-dev libtiff4-dev libXpm libjpeg libgif/libungif libtiff
+
+**教育网
+1、代码已经合并了，不需要加-r emacs-unicode-2了，加上以后签出的源码反而有问题
+cvs -d:pserver:anonymous@ftp.tsinghua.edu.cn/cvsroot co -d emacs-unicode-2 cvs.savannah.gnu.org/emacs/emacs
+
+以前的源码签出方式：（作废）
+cvs -d:pserver:anonymous@ftp.tsinghua.edu.cn/cvsroot co -r emacs-unicode-2 -d emacs-unicode-2 cvs.savannah.gnu.org/emacs/emacs
+**公网
+获取源代码：
+
+sudo export CVS_RSH="ssh"
+
+cvs -z3 -d:pserver:anonymous@cvs.savannah.gnu.org:/sources/emacs co emacs
+以前的源码签出方式（作废）
+cvs -z3 -d:pserver:anonymous@cvs.savannah.gnu.org:/sources/emacs co -r emacs-unicode-2 emacs
+
+or
+
+git-clone git://git.sv.gnu.org/emacs
+
+这个镜像是 Jim Meyering 维护的，他在邮件列表中说：
+The git repository should never be more than about 30-60
+minutes behind the CVS one.
+
+**更新：
+
+cvs up
+
+**编译命令：
+***1、编译命令
+****1
+./configure --prefix=/usr --enable-font-backend --with-xft --with-freetype --with-x-toolkit=gtk
+
+****2
+./configure --prefix=/home/korland/emacs23 --with-xft  --with-freetype --enable-font-backend --with-x-toolkit=gtk --with-freetype2 --with-x --with-xpm --with-jpeg --with-tiff --with-gif --with-png --build=i686-pc-linux-gnu
+
+****3
+./configure --prefix=/home/korland/emacs23   --sharedstatedir=/var/lib --libexecdir=/usr/lib --localstatedir=/var --infodir=/usr/share/info --mandir=/usr/share/man --with-xft  --with-freetype --enable-font-backend --with-x-toolkit=gtk --with-freetype2 --with-x --with-xpm --with-jpeg --with-tiff --with-gif --with-png --with-lXaw3d --with-lrsvg-2 --with-lgpm --with-ldbus --with-lm17n-flt --with-lotf --build=i686-pc-linux-gnu
+
+***2、config 提示信息
+
+Configured for `i686-pc-linux-gnu'.
+
+  Where should the build process find the source code?    /home/korland/cvs/emacs-unicode-2
+  What operating system and machine description files should Emacs use?
+        `s/gnu-linux.h' and `m/intel386.h'
+  What compiler should emacs be built with?               gcc -g -O2 -Wno-pointer-sign
+  Should Emacs use the GNU version of malloc?             yes
+      (Using Doug Lea's new malloc from the GNU C Library.)
+  Should Emacs use a relocating allocator for buffers?    yes
+  Should Emacs use mmap(2) for buffer allocation?         no
+  What window system should Emacs use?                    x11
+  What toolkit should Emacs use?                          GTK
+  Where do we find X Windows header files?                Standard dirs
+  Where do we find X Windows libraries?                   Standard dirs
+  Does Emacs use -lXaw3d?                                 no
+  Does Emacs use -lXpm?                                   yes
+  Does Emacs use -ljpeg?                                  yes
+  Does Emacs use -ltiff?                                  yes
+  Does Emacs use a gif library?                           yes -lgif
+  Does Emacs use -lpng?                                   yes
+  Does Emacs use -lrsvg-2?                                no
+  Does Emacs use -lgpm?                                   no
+  Does Emacs use -ldbus?                                  no
+  Does Emacs use -lfreetype?                              yes
+  Does Emacs use -lm17n-flt?                              no
+  Does Emacs use -lotf?                                   no
+  Does Emacs use -lxft?                                   yes
+  Does Emacs use X toolkit scroll bars?                   yes
+
+***3、编译
+make bootstrap && make info && sudo make install
+***3、 清理及重新配置
+运行make distclean 清理，然后执行上述过程
+***4、升级
+cvs update -dP
+
+*---gnus中清除垃圾邮件的方法 by brep---2008年06月13日 | 20:28:59
+
+    1，在 Summary buffer 里
+   V x -5000
+   自动清除低于 -5000 分的邮件
+
+   2, 在 Summary buffer 里
+   C-u 10000 L h p p cn\..*,cn\..*
+
+这样，所有交叉 post 到两个以上 cn 组的帖子都会被自动清除，我观察了一下，大部分垃圾帖子都是 post 到多个组的。
+注意，这些帖子只是不显示出来罢了，并不是被真正清除了，我们没有权利删除 nntp 服务器上的帖子，用 `/  E' 命令仍然可以把这些帖子显示出来。
+
+*---一般模式文本整体缩进---2008年06月 4日 | 17:49:15
+
+    1、C-a C-@ C-n C-n C-n C-f C-f C-f  C-r o  (没弄太明白)
+	2、选种区域------->  C-x TAB    (需要重复执行)
+*---Emacs宏的使用---2008年06月 4日 | 08:31:45
+
+    快捷键：
+		开始录制宏：	C-x + (
+		停止录制宏：	C-x + )
+		执行宏命令：	C-x + C-e
+		重复执行宏：	C-u + 重复执行次数 + C-x + C-e
+
+*---Linux下设置Emacs最大化（不是很完美）---2008年05月30日 | 17:31:15
+
+    1、M-! xwininfo
+    2、重点看最后一行，类似如下：
+     -geometry 122x41+0+27
+    3、
+    (1)在.emacs中加入如下设置：
+
+    (if window-system
+    (setq default-frame-alist
+          (append
+           '((top . 0)
+             (left . 0)
+             (width . 123)
+             (height . 41))
+           default-frame-alist))
+     )
+    (2)在命令后加参数
+
+    emacs --geometry 123x41+0+0
+
+    (3)修改.Xdefaults and/or .Xresources
+    有待完善的内容
+*---设置关键字显示风格---2008年05月29日 | 21:09:44
+
+    customize-group RET
+    font-lock-faces
+
+*---查看emacs编译选项--2008年05月29日 | 15:40:31
+在scratch中输入，然后C-x C-e执行即可显示结果
+(emacs-version)
+
+system-configuration
+
+system-configuration-options
+
+*---Emacs中块注释和取消---2008年05月18日 | 14:20:00
+**---块注释
+     选则区域
+	 M-x comment-region
+**---块注释取消
+	 选择区域
+	 M-x comment-or-uncomment-region
+*---Emacs中编译.el文件的方法---2008年01月11日 | 12:27:53
+**---1.在Eamcs中运行Alt-x
+       byte-force-recompile [Enter]
+	   指定目录
+**---2.在终端中运行如下命令：
+	   emacs -batch -f batch-byte-compile *.el
+
+*---Mew数组越界问题解决方案---2008年01月10日 | 16:42:36
+**---1、修改mew-header.el文件
+mew-header.el 里面，mew-addrstr-parse-syntax-list 函数：
+(tmp (make-string len ?x))
+改为：
+           (tmp (string-to-multibyte (make-string len ?x)))
+应该就好了（也许需要重新 byte-compile 一下）。
+**---2、在设置中加上如下语句：
+(defadvice make-string (after lsd/make-string)
+"convert the string to multibyte"
+(setq ad-return-value (string-to-multibyte ad-return-value)))
+(ad-activate 'make-string)
+*---Mew设置Tips---2008年01月10日 | 16:32:36
+**---在summary-mode时，常用命令如下：
+w					撰写新邮件
+a					回复邮件，不带引用
+A					恢复邮件，带引用
+f					转发邮件
+r					重新发送邮件
+SPC					阅读邮件
+y					保存文件（可以保存信件全文、信件全文、附件）
+C-c C-l				转换当前邮件的编码格式
+C-c C-a				加入地址簿
+C-u C-c C-a			比C-c C-a多加入昵称和名字
+**---用mew-send命令撰写新邮件，撰写新邮件的时候常用命令如下：
+C-c C-q				不保存退出
+C-c C-a				准备插入附件
+mew-attach-copy		用复制的方式加入附件
+mew-attach-link		用链接的方式加入附件
+mew-attach-delete	删除附件
+C-c C-c				发送邮件
+C-c RET				保存邮件到发送队列
+
+**---注意，对附件的操作都要在C-c C-a命令之后。
+**---另外两条重要命令：
+
+C					如果设置了多个邮件，用C命令切换
+Q					退出Mew
+
+*---Emacs23指定文件启动自动为某种模式
+	在文件的第一行加入  “-*- outline -*-”后，可以使文件打开默认为outline模式。
+*---Debian-Emacs23设置中文环境---2007年12月21日 | 10:20:50
+**1、首先拷贝字体到／ust/share/fonts/turetype/kernelfonts
+**2、在字体目录下运行mkfontscale mkfontdir,先后顺序不能弄错
+**3、修改生成的文件fonts.scale fonts.dir
+将字体MSYH.TTF的信息
+MSYH.TTF -microsoft-microsoft yahei-medium-r-normal--0-0-0-0-p-0-ascii-0
+修改为
+MSYH.TTF -microsoft-microsoft yahei-medium-r-normal--0-0-0-0-p-0-gbk-0
+以为声称的两个文件缺少对于GBK的支持，所以需要添加此行。
+*** 注意：第一行的数字要根据添加的行数进行相应的修改，要保证于修改后实际行数相吻合。
+**4、修改xorg配置文件
+  打开/etc/X11/xorg.conf文件，将字体的路径和对freetype的支持写入配置文件之中。
+***1）在Section "Files"中添加字体路径
+   Section "Files"
+           ......
+           FontPath   "/path/to/my/truetype/font"
+           ......
+   EndSection
+***2)在Section "Module"中加载"freetype"模块
+
+  Section "Module"
+           ......
+           Load    "freetype"
+           ......
+   EndSection
+***3）重新启动X，用xlsfonts命令查看字体是否安装成功。注意：只有用xlsfonts命令能看到的字体emacs才能用
+**5、设置emacs的配置文件
+***  我的debian-emacs23配置文件如下：
+;-------------------------------------------------------------------------------
+(set-language-environment 'chinese-gbk)
+(set-keyboard-coding-system  'chinese-gbk)
+(set-terminal-coding-system  'chinese-gbk)
+(set-clipboard-coding-system 'chinese-gbk)
+(set-selection-coding-system 'chinese-gbk)
+
+(setq file-coding-system-alist
+    (list file-coding-system-alist
+        `(".*" chinese-gbk)))
+
+(create-fontset-from-fontset-spec
+   "-*-monaco-medium-r-normal-*-18-*-*-*-*-*-fontset-monaco")
+(set-default-font "fontset-monaco")
+(setq default-frame-alist
+			(append
+			 '((font . "fontset-monaco")) default-frame-alist))
+
+(set-fontset-font
+"fontset-default" nil
+"-mircosoft-mircosoft yahei-medium-r-normal--18-*-*-*-p-0-gb2312.1980-*" nil 'prepend)
+
+(set-fontset-font
+"fontset-monaco" 'kana
+"-mircosoft-mircosoft yahei-medium-r-normal--18-*-*-*-p-0-gbk-0" nil 'prepend)
+
+(set-fontset-font
+"fontset-monaco" 'han
+"-mircosoft-mircosoft yahei-medium-r-normal--18-*-*-*-p-0-gbk-0" nil 'prepend)
+
+(set-fontset-font
+"fontset-monaco" 'cjk-misc
+"-mircosoft-mircosoft yahei-medium-r-normal--18-*-*-*-p-0-gbk-*" nil 'prepend)
+;<----------------End------------------------------------------------------>;
+
+*** Windows-emacs22中文配置如下：
+
+;; 默认的语言
+(set-language-environment 'Chinese-gbk)
+;; 键盘输入，用于输入法。
+(set-keyboard-coding-system 'chinese-gbk)
+;; 终端显示的编码方式。
+(set-terminal-coding-system 'chinese-gbk)
+;; 剪切板，用于和其他程序之间复制内容
+(set-clipboard-coding-system 'chinese-gbk)
+;;设置字体
+;;Courier
+;;------------- Emacs22 for windows 字体设置
+
+(setq w32-charset-info-alist
+    (cons '("gbk" w32-charset-gb2312 . 936) w32-charset-info-alist))
+
+(setq default-frame-alist
+      (append
+       '((font . "fontset-gbk")) default-frame-alist))
+(create-fontset-from-fontset-spec
+   (concat
+      "-outline-Monoco-normal-r-normal-normal-16-*-96-96-c-*-fontset-gbk,"
+      "chinese-gb2312:-outline-新宋体-normal-r-normal-*-14-*-96-96-c-*-iso10646-1,"
+	  "mule-unicode-0100-24ff:-*-新宋体-normal-r-*-*-14-*-96-96-c-*-iso10646-1,"
+	  "chinese-cns11643-5:-*-新宋体-normal-r-normal-*-14-*-96-96-c-*-iso10646-1,"
+	  "chinese-cns11643-6:-*-新宋体-normal-r-normal-*-14-*-96-96-c-*-iso10646-1,"
+	  "chinese-cns11643-7:-*-新宋体-normal-r-normal-*-14-*-96-96-c-*-iso10646-1"))
+(set-default-font "fontset-gbk")
+
+
+** 配置心得
+***1）几个有用的命令：
+a）在*scratch* buffer中输入
+	(frame-parameter nil 'font)   把光标放在行末按C-x C-e可以查看当前的字体
+b)Shift + MouseLeftClick  可以出来字体选择对话框
+c)M-x describe-font 可以查看当前字体描述
+d)M-x set-default-font <RET><TAB>可以看到当前emacs可以选择的字体
+
+***2）设置雅黑字体是产生韩文的问题
+   将字号调节为18就可以了，用别的字号界面提示栏显示韩文，具体原因可能是于字体本身的标准字号不符,一般的字号为12、18、24、36、48
+-*-monaco-medium-r-normal-*-18-*-*-*-*-*-fontset-monaco
+
+***3)windows设置字体技巧
+
+  运行M-x set-default-font <RET><TAB> 来查看当前自己使用字体，这一步关键是得到想用的字体的字体集的写法，依样画葫芦写到自己的配置文件就可以了。
+
+*---emacs模式定制---2007年12月21日 | 09:50:45
+   将以.note为扩展名的文件的默认打开方式设置为outline-mode
+(setq auto-mode-alist (cons '("\\.note$" . outline-mode) auto-mode-alist))
+
+*---emacs键绑定相关---2007年12月20日 | 13:46:32
+
+(global-set-key [f1] 'cvs-examine)
+(global-set-key "\C-x\C-b" 'electric-buffer-list)
+(global-set-key "\C-xb" 'electric-buffer-list)
+
+
+*---在Emacs中插入当前时间---2007年12月20日 | 13:36:32
+
+关键变量：insert-current-time		format-time-string
+
+命令行方式：C-u M-！date <RET>  ----2008年 10月 26日 星期日 15:39:54 CST
+
+
+方法一：（缺点：不利于定制）
+ ; insert-current-time
+(defun insert-current-time ()
+    "Insert the current time"
+    (interactive "*")
+    (insert (current-time-string)))
+;(global-set-key "C-xt" 'insert-current-time)
+
+方法二：（推荐）
+; insert-date
+(defun insert-date ()
+			 "Insert date at point."
+  			(interactive)
+ 			  (insert (format-time-string "%Y年%m月%e日 %l:%M %a %p")))
+
+
+*---AUCTeX-Tips---2007-07-02
+**Entering Sectioning Commands
+					 C-c C-s
+**Entering Environment
+  like '\begin{}' or '\end{}' pairs.
+			 		 C-c C-e
+
+*---Emacs22和23的字体设置--2007-06-10
+
+** Emacs22 for windows 字体设置
+
+(setq w32-charset-info-alist
+    (cons '("gbk" w32-charset-gb2312 . 936) w32-charset-info-alist))
+
+(setq default-frame-alist
+      (append
+       '((font . "fontset-gbk")) default-frame-alist))
+
+(create-fontset-from-fontset-spec
+ (concat
+  "-outline-Courier New-normal-r-normal-normal-13-97-96-96-c-*-fontset-gbk,"
+  "chinese-gb2312:-outline-新宋体-normal-r-normal-*-14-*-96-96-c-*-iso10646-1,"
+  "mule-unicode-0100-24ff:-*-新宋体-normal-r-*-*-14-*-96-96-c-*-iso10646-1,"
+  "chinese-cns11643-5:-*-新宋体-normal-r-normal-*-14-*-96-96-c-*-iso10646-1,"
+  "chinese-cns11643-6:-*-新宋体-normal-r-normal-*-14-*-96-96-c-*-iso10646-1,"
+  "chinese-cns11643-7:-*-新宋体-normal-r-normal-*-14-*-96-96-c-*-iso10646-1"))
+(set-default-font "fontset-gbk")
+
+** Emacs23 for windows 字体设置
+
+(setq w32-charset-info-alist
+    (cons '("gbk" w32-charset-gb2312 . 936) w32-charset-info-alist))
+(setq default-frame-alist
+      (append
+       '((font . "fontset-gbk")) default-frame-alist))
+(create-fontset-from-fontset-spec
+  "-outline-Courier New-normal-r-normal-normal-13-97-96-96-c-*-fontset-gbk")
+(set-fontset-font
+ "fontset-default" nil
+ "-outline-新宋体-normal-r-normal-*-14-*-96-96-c-*-iso10646-1" nil 'prepend)
+(set-fontset-font
+ "fontset-gbk" 'kana
+ "-outline-新宋体-normal-r-normal-*-14-*-96-96-c-*-iso10646-1" nil 'prepend)
+(set-fontset-font
+ "fontset-gbk" 'han
+ "-outline-新宋体-normal-r-normal-*-14-*-96-96-c-*-iso10646-1" nil 'prepend)
+(set-fontset-font
+ "fontset-gbk" 'cjk-misc
+ "-outline-新宋体-normal-r-normal-*-14-*-96-96-c-*-iso10646-1" nil 'prepend)
+(set-fontset-font
+ "fontset-gbk" 'symbol
+ "-outline-新宋体-normal-r-normal-*-14-*-96-96-c-*-iso10646-1" nil 'prepend)
+(set-default-font "fontset-gbk")
+
+* 一些字体设置技巧 --2007-06-10
+
+** 几个字体相关的命令
+M-x describe-char
+
+我们可以使用这个命令查看光标所在的字符采用的是什么字体。
+
+M-x describe-fontset
+
+这个命令用来查看各个字符集分别采用了什么字体。
+
+这两个命令可以用来检验我们的设置是否发挥了作用。
+** 设置字体的技巧（Dieken提供）：
+***(1)在*scratch* buffer中输入
+(frame-parameter nil 'font)
+光标放在行末按C-x C-e就可以看到当前字体;
+***(2)Shift + MouseLeftClick可以出来字体选择对话框;
+***(3)M-x describe-font可以查看当前字体描述
+***(4)M-x set-default-font <RET><TAB>可以看到可以选择的字体。
+
+
+*---Use bookmark--- 2007-01-11
+
+C-x r m					设置书签
+C-x r b					打开书签
+C-x r l					打开书签列表
+bookmark-rename	重新命名一个书签
+bookmark-delete	删除一个书签
+bookmark-save		把书签全部保存到默认的文件 .emacs.bmk
+bookmark-insert	插入与给定书签关联着的文件的完整内容
+bookmark-write	把书签保存到一个指定的文件中
+bookmark-load		从指定文件中加载书签
+bookmark-menu-list			进入"Bookmark List"编辑缓冲区
+
+*---outline-mode Tips---
+
+C-c C-t					 隐藏全体正文行
+C-c C-d					 隐藏某标题的全体下级标题及其相关正文
+C-c C-l					 隐藏某标题的正文部分，同时隐藏它全体下标题的正文部分
+C-c C-a					 显示被隐藏起来的所有东西
+C-c C-s					 显示某个给定标题的下级小标题和它的相关文本
+C-c C-k					 显示某标题得正文及其全体下标题得全部正文
+C-c C-i					 显示某标题得下一级小标题（不包括正文文本）
+C-c C-n					 移动到下一个标题
+C-c C-p					 移动到上一个标题
+C-c C-f					 移动到下一个同级标题
+C-c C-b					 移动到上一个同级标题
+C-c C-u					 移动到上一级别的标题层次
+
+
+*---Emacs中设置info文档---2006-03-16 | 21:27
+如果你需要能够在Emacs中查看Emacs-wiki的Info文档，请首先在shell（Windows系统可以使用cygwin）中用如下命令编译文档
+cd ~/emacs-wiki
+makeinfo emacs-wiki.texi
+具体的路径请自行修改。然后将生成的emacs-wiki.info文件拷贝至你的emacs安装的info目录中，打开info目录中的dir文件，添加如下
+ * emacs-wiki: (emacs-wiki). Wiki hypertext markup system for Emacs 一行。以后使用C-h i即可以在Info中浏览文档。
+*---单词首字母大写
+M-c 将每个单词的首字母大写
+*---time-clock about  ---2006-03-16 | 19:50
+
+C-c C-i: planner-task-in-progress.
+C-c C-o: timeclock-out.
+C-c C-T C-i: planner-timeclock-in. (XEmacs)
+C-c C-T C-o: timeclock-out. (XEmacs)
+C-c C-S-t C-i: planner-timeclock-in. (GNU Emacs)
+C-c C-S-t C-o: timeclock-out. (GNU Emacs)
+
+
+*---Planner的task-id的设置			---2006-03-16 | 19:30
+
+This module modifies the behavior of planner.el, adding global task IDs so that tasks can be edited and updated. Planner IDs are of the form `{{Identifier:Number}}'.
+
+— User Option: planner-id-add-task-id-flag
+Non-nil means automatically add global task IDs to newly-created tasks. If nil, use planner-id-add-task-id to add IDs to existing tasks, or planner-id-add-task-id-to-all to add to all tasks on the current page.
+
+— User Option: planner-id-update-automatically
+Non-nil means automatically update linked tasks whenever a page is saved. If nil, use planner-update-task to update the linked task. By default, linked tasks are automatically updated.
+
+— User Option: planner-id-tracking-file
+File that contains ID tracking data. This file is automatically overwritten.
+The following interactive functions are defined in planner-id.el:
+
+— Function: planner-id-jump-to-linked-task &optional info
+Display the linked task page. If info is specified, follow that task instead.
+
+— Function: planner-id-add-task
+Add a task ID for the current task if it does not have one yet. Update the linked task page, if any.
+
+— Function: planner-id-update-tasks-on-page &optional force
+Update all tasks on this page. Completed or cancelled tasks are not updated. This can be added to write-file-functions. If force is non-nil, completed and cancelled tasks are also updated.
+
+— Function: planner-id-add-task-id-to-all
+Add a task ID for all the tasks on the page. Update the linked page, if any.
+
+— Function: planner-id-search-id id
+Search for all occurrences of id.
+
+— Function: planner-id-follow-id-at-point
+Display a list of all pages containing the ID at point.
+
+— Function: planner-id-follow-id-at-mouse event
+Display a list of all pages containing the ID at mouse. event is the mouse event.
+
+
+*---[Planner Review]	2006-03-15
+
+Bind useful functions to shortcut keys and get used to creating tasks and notes from anywhere.
+更加高效的使用Planner的方法：
+将(plan)放在~/.emacs文件的最后，这样你每天都可以看到你任务的提醒。
+将有用的功能设定为快捷键有助与在任何地方建立任务和笔记。
+-------
+planner buffers外部有用的功能：
+planner-create-task-from-buffer
+remember
+planner-goto-today
+planner-goto
+plan
+--------
+planner buffers环境内的有用功能：
+C-c C-t (planner-create-task-from-buffer)
+C-c C-x (planner-task-done)
+M-x planner-edit-task-description
+C-c C-c (planner-copy-or-move-task), M-x planner-copy-or-move-region
+M-x planner-replan-task
+M-x planner-delete-task
+M-p (planner-raise-task) and M-n (planner-lower-task)
+C-M-p (planner-raise-task-priority) and C-M-n (planner-lower-task-priority),
+planner-replan-note
+planner-update-note
+
+*---保存 customize 设置的文件		2006-03-15
+
+ M-x customize 功能保存设置的文件，默认的是 Emacs 的初始化文件 .emacs。
+  用另外的文件保存文件保存：
+   (setq custom-file "~/.emacs.d/.emacs_custom.el")
+   这样的话还需要在 .emacs 中加载一下：
+  	(load custom-file)
+
+*---JinXin's Tip				2006-03-15
+**---设置文件中添加：
+(require 'hl-line)
+(global-hl-line-mode t)
+**---运行环境中运行命令：
+M-x hl-line-mode
+
+*---指定个人lisp文件夹					2006-03-15
+
+指定加载自己的lisp文件夹，在.emacs里面加入下列句子：
+(setq load-path (cons "~/my-site-lisp/" load-path))
+
+*---Planner's Setting								2006-03-15
+
+(require 'planner)
+;; 设置planner的源文件路径
+(setq planner-directory "~/Homepage/src/plan")
+;; 设置planner的发布路径
+(setq planner-publishing-directory "~/Homepage/publish/plan" )
+;;和calendar一齐启动，用calendar浏览每天的planner
+(planner-calendar-insinuate)
+;; 日历选择一时间后，显示计划文件
+(setq planner-calendar-show-planner-files t)
+
+*---Emacs-WiKi's simple setting						2006-03-15
+
+1. download http://repose.cx/emacs/wiki/emacs-wiki.el.gz
+cd ~/emacs
+tar -zxf emacs-wiki.el.gz
+2. 修改 .emacs
+参考 http://learn.tsinghua.edu.cn/homepage/015450/emacs_elisp.html#wiki
+(require 'emacs-wiki)
+(add-hook 'emacs-wiki-mode-hook
+      (lambda ()
+        (define-key emacs-wiki-mode-map (kbd "C-c C-h") 'emacs-wiki-preview-ht
+ml)
+        (define-key emacs-wiki-mode-map (kbd "C-c C-c") 'emacs-wiki-preview-so
+urce)
+        (define-key emacs-wiki-mode-map (kbd "C-c C-v") 'emacs-wiki-change-pro
+ject)
+
+))
+;; (setq emacs-wiki-grep-command "glimpse -nyi "%W"")
+   (setq emacs-wiki-publishing-directory "publish")
+   (setq emacs-wiki-directories '("~/WiKi"))
+   (setq emacs-wiki-meta-charset "gb2312")
+   (setq emacs-wiki-style-sheet
+      "")
+	  (setq emacs-wiki-inline-relative-to 'emacs-wiki-publishing-directory)
+(defun emacs-wiki-preview-source ()
+  (interactive)
+  (emacs-wiki-publish-this-page)
+  (find-file (emacs-wiki-published-file)))
+(defun emacs-wiki-preview-html ()
+  (interactive)
+  (emacs-wiki-publish-this-page)
+  (browse-url (emacs-wiki-published-file)))
+(setq emacs-wiki-projects
+      `(("default" . ((emacs-wiki-directories . ("~/WiKi"))))
+        ("work" . ((fill-column . 65)
+                 (emacs-wiki-directories . ("~/workwiki/"))))))
+3.
+(setq emacs-wiki-style-sheet
+      ""<link rel="stylesheet" type="text/css" href="core.css">")
+可以让你的网页不那么呆板
+4. C-x C-f 一个文件  ~/Wiki中编写笔记
+5. C-c C-p 把所有的东西变成 html 发布
+会在 ~/Wiki/publish 下面有很多网页。
+用自己喜欢的 Web Server 启动他吧。
+(setq emacs-wiki-publishing-directory "/webserver:/")
+好像可以直接发布到服务器上，用 ftp 上传，方法和编辑 ftp 远端文件类似，
+我不确定，你可以试一试。
+6. 如何编写
+http://repose.cx/emacs/wiki/WikiMarkup.html下面有，两分钟就学会了。
+
+*---color-theme的安装方法
+
+		首先列出相应的主题： M-x list-faces-display RET
+    在相应的主题下面按'd'，则会出现这个主题的名字，然后在.emacs文件里面加上
+     (require 'color-theme)
+	 (color-theme-gnome2)
+<------------------------------End------------------------------------------------->

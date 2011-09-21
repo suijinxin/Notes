@@ -1,0 +1,33 @@
+				SuiJinXin Vim Notes		-*- outline -*-
+* --Vim字体调整相关  --2010年12月11日 14:45:00 
+在.vimrc中加入
+set guifont=文泉驿等宽微米黑\ 11
+set guifontwide=文泉驿等宽微米黑\ 11
+
+注意字号格式是：   \+空格+字号
+*---vim插件目录---2008年05月20日 | 08:25:47
+
+**---全局插件文件放在         ~/.vim/plugin
+**---文件类型插件文件放在      ~/.vim/ftplugin
+
+*---vim帮助文档的安装---2008年05月19日 | 23:03:30
+
+    :helptags ~/.vim/doc/
+
+*---vim的插件目录---2008年05月18日 | 19:50:44
+
+    在用户目录下建立.vim目录即可。
+
+*---Vim转换html文件的方法---2008年05月18日 | 15:30:17
+
+    :TOhtml
+
+*---Vim中文帮助安装及设置---2008年05月18日 | 14:20:38
+**1、下载安装文件
+    http://vimcdoc.sf.net
+    按照说明文件进行安装。
+    tar zxvf vimcdoc.1.6.0.tar.gz
+    ./vimcdoc.sh -i(最好以root身份运行，安装后所有用户均可使用中文帮助)
+**2、.vimrc设置
+    set helplang=cn
+以后每次运行 :help即可显示中文了。
