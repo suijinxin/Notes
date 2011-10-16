@@ -22,7 +22,7 @@ hostname fify
 hostname
 
 * CentOS静态IP更改配置 --2011年05月22日 10:10:09 
-** 原来的动态IP配置文件
+** 在CentOS 5中的配置文件
 修改文件：vim /etc/sysconfig/network-scripts/ifcfg-eth0
 
 # Marvell Technology Group Ltd. 88E8057 PCI-E Gigabit Ethernet Controller
@@ -44,6 +44,7 @@ IPV6_AUTOCONF=yes
 NETMASK=255.255.255.0
 NETWORK=192.168.3.0
 ONBOOT=yes
+
 ** DNS配置
 修改文件：vim /etc/resolv.conf
 nameserver 202.118.224.101
@@ -70,7 +71,23 @@ service network restart
 或者
 /etc/init.d/network restart
 
-** 测试解决
+** CentOS 6中/etc/sysconfig/network-scripts/ifcfg-eth0 的配置：
+基本都在一起了，无需其他配置
+TYPE=Ethernet
+BOOTPROTO=none
+IPADDR=192.168.3.59
+PREFIX=24
+GATEWAY=192.168.3.254
+DNS1=202.118.224.101
+DNS2=202.97.224.68
+DEFROUTE=yes
+IPV4_FAILURE_FATAL=yes
+IPV6INIT=no
+NAME="Auto eth0"
+ONBOOT=yes
+UUID=02e004fc-e5cc-15ce-4b2a-a0dfe7a2865f
+LAST_CONNECT=1318761000
+
 
 * CentOS系统服务配置  --2011年05月22日 08:23:02 
 chkconfig 
@@ -91,6 +108,8 @@ yum -y install rpm-build glib2-devel dbus-devel freetype-devel
 yum -y install fontconfig-devel gcc-c++ expat-devel
 yum -y install python-devel libXrender-devel
 yum -y install libart_lgpl-devel
+
+yum -y install perl-core.x86_64    #<----CentOS6
 ** 2、安装confuse-2.7
 *** 方法1、最新版源码编译（64位系统下有问题）
 **** 编译方法

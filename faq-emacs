@@ -1,0 +1,104 @@
+          %% coding: gbk                  可以根据情况换成其它注释符号，
+          %% End:                         普通文本也可以不加注释符号。
+
+* TeX
+=====
+
+1.Windows下不能使用LaTeX-preview
+    使用CVS的GNU Emacs或XEmacs就可以了
+
+2.Emacs能象vimsuite那样加载类似CJK的模板么?
+    可以，使用template.el扩展可以加载任何格式的模板
+
+* Programming
+=============
+
+1.怎样把C/C++文件重新排版
+    选择文本块,ESC C-\,M-X c-set-style,可以设置不同的缩进风格
+
+2. c/c++, java 自动补全功能?
+   c/c++ - ecb
+   java  - jde
+
+Both kind of *SLOW*, though.
+
+3. 如何在Emacs中编写调试c/c++程序
+   M-x c-mode/ M-x cc-mode
+   M-x compile
+   M-x gdb
+
+
+* Gnus, Mail, Web
+=================
+
+1.mew怎样使用SMTP验证?
+    (setq mew-smtp-auth-list (quote ("CRAM-MD5" "LOGIN" "PLAIN")))
+
+2.怎样使mew在pop取信时将信件保留在服务器上?
+    (setq mew-pop-delete nil)
+
+3.gnus怎样使用通讯录?
+    可以用 bbdb
+
+* Download
+===========
+
+1.获取最新版本的GNU Emacs源码
+    最新源码可以使用cvs方式:
+    cvs -z3 -d:pserver:anonymous@cvs.savannah.gnu.org:/sources/emacs co emacs
+    windows用户可以用cygnus下的cvs(推荐), 也可以装一个WinCVS
+
+2.Windows用户如何获取GNU Emacs编译版本
+   一个更新较快的站点: http://ourcomments.org/cgi-bin/emacsw32-dl-latest.pl
+   下载NTemacs的最新CVS版: http://ntemacs.sourceforge.net/
+
+
+3.Mac用户如何获取GNU Emacs编译版本
+   基于Emacs22的版本:
+   Carbon Emacs: http://homepage.mac.com/zenitani/emacs-e.html
+   AquaEmacs: http://aquamacs.org/
+   基于Emacs23的版本
+   Emacs.app: http://emacs-app.sourceforge.net/
+
+
+
+* Resources
+===========
+
+1.推荐Emacs入门书籍
+  a.Sams Teach Yourself Emacs in 24 Hours
+    可以从http://learn.tsinghua.edu.cn/homepage/2001315450/emacs_doc.html
+    在线阅读。在ftp.tsinghua.edu.cn中可以下载全文、光盘中的内容以及官方网站
+    上的一些东西。不要被书名所迷惑，你不可能在24小时内学会的。
+  b.《学习GNU Emacs》
+    O'Reilly和机械工业出版社出版的，定价很高，￥68.00。清华的图书馆有藏书，
+    索书号: TP391.12_K073，借的人很多，需要提前预约。
+
+2.推荐Emacs Lisp入门书籍
+  a. GNU Emacs Lisp编程入门
+     涵盖了入门需要的几乎所有知识，写给没用过Emacs，没学过lisp；
+     但是用过编辑器，会写程序的人看的入门书。这本书最好用info看，
+     一边看一边就可以试。在info里面显示为Emacs Lisp Intro。
+  b. GNU Emacs Manual
+     速查手册，info里面显示为Elisp。
+  c. 《Writing GNU Emacs Extensions》by Bob Glickstein, O'REILLY
+
+3.ftp.tsinghua.edu.cn的Emacs专区
+    有三种访问方式
+    http://ftp.tsinghua.edu.cn/pub/Software/Emacs/
+    ftp://ftp.tsinghua.edu.cn/Software/Emacs/
+    rsync://ftp.tsinghua.edu.cn/pub/Software/Emacs/
+
+4.Emacs资源哪里最多?
+    [Emacs Wiki]  http://www.emacswiki.org
+    [Emacs 中文站] http://www.emacs.cn
+    [Emacs Wiki Elisp List] 很全的elisp list
+           http://www.emacswiki.org/cgi-bin/wiki/WikifiedEmacsLispList
+
+5.一个收集大量Emacs配置文件的网站
+    http://www.dotemacs.de/
+
+## ends here
+
+※ 修改:·brep 于 Nov 25 00:08:32 修改本文·[FROM: 211.99.222.*]
+※ 修改:·freelancer 于 Sep 26 13:00:03 2008 修改本文·[FROM: 202.108.130.*]                                            
