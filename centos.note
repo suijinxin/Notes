@@ -1,4 +1,7 @@
 ---------------SuiJinXin CentOS Notes		-*- outline -*-
+* CentOS 配置源后升级 --2011年10月25日 14:47:55 
+rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-*
+rpm update
 * CentOS修改主机名 --2011年07月 5日 12:28:29 
 ** 1. 修改配置文件
 设置CentOS主机名称的文件为：/etc/sysconfig/network，修改其中HOSTNAME后的名称为想要的名称，例如：
@@ -196,6 +199,8 @@ chkconfig --add gmond # make sure gmond starts up at boot time
 *** 相关问题
 图形显示不全，
 yum install php-gd
+或则
+
 ** 配置Ganglia客户端
 *** 1、编译
 ./configure  --sysconfdir=/etc/ganglia --with-librrd=/usr/local/rrdtool --enable-gexec --enable-status

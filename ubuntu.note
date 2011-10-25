@@ -1,4 +1,9 @@
 	SuiJinXin Ubuntu Notes		-*- outline -*-
+*---Ubuntu下的一个服务配置命令 --2011年10月25日 15:30:41 
+
+ubuntu下sysv-rc-conf命令等同RedHat/CentOS下chkconfig命令
+apt-get install sysv-rc-conf
+
 *---右上角有线网络图标不可用--2011年08月23日 19:30:57 
 故障原因为NM的托管被false了
 修改：
