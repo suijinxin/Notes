@@ -1,4 +1,16 @@
 ----------SuiJinXin LFS and Gentoo Notes		-*- outline -*-
+* Gentoo升级Xorg后进入X系统鼠标键盘不好使 --2011年12月25日 13:50:52 
+作为合格的gentoo用户，首先要做到注意升级后的提示信息。
+** 运行如下命令：
+#qlist -I x11-driver
+
+x11-drivers/xf86-input-evdev
+x11-drivers/xf86-input-synaptics
+x11-drivers/xf86-video-intel
+
+** 重新安装如上程序
+emerge -av x11-drivers/xf86-input-evdev x11-drivers/xf86-input-synaptics x11-drivers/xf86-video-intel
+
 * Gentoo升级更新过程中出现blocked的情况 --2011年04月23日 14:04:54 
   block最常见的是已安装软件的block要安装的软件
   如果是这种情况，emerge -C 已安装的即可

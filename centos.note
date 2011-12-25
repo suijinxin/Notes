@@ -111,8 +111,14 @@ yum -y install rpm-build glib2-devel dbus-devel freetype-devel
 yum -y install fontconfig-devel gcc-c++ expat-devel
 yum -y install python-devel libXrender-devel
 yum -y install libart_lgpl-devel
+yum -y install pcre-devel
 
-yum -y install perl-core.x86_64    #<----CentOS6
+#<----CentOS6
+yum -y install perl-core.x86_64
+
+#安装CentOS开发包：
+yum install gcc gcc-c++ gcc-g77 flex bison autoconf automake bzip2-devel zlib-devel ncurses-devel libjpeg-devel libpng-devel libtiff-devel freetype-devel pam-devel
+
 ** 2、安装confuse-2.7
 *** 方法1、最新版源码编译（64位系统下有问题）
 **** 编译方法

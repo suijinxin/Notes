@@ -29,20 +29,7 @@ $sudo date -s 20110604
 调出主菜单的窗口 ,在程序---其他 右侧窗口中勾选"显示器和显卡"
 再在应用程序---其他--显示器型号和显卡窗口中修改
 调出显示器型号和显卡设置窗口中修改。
-*---Ubuntu下安装codeblocks
-1）在 CodeBlocks 官网 http://www.codeblocks.org/downloads/ 下载 CodeBlocks 的 Ubuntu 版本并解压缩。
 
-2）按以下顺序安装各软件包
-
-libcodeblocks0_8.02-0ubuntu1_i386.deb
-codeblocks-dev_8.02-0ubuntu1_i386.deb
-libwxsmithlib0-dev_8.02-0ubuntu1_i386.deb
-libwxsmithlib0_8.02-0ubuntu1_i386.deb
-codeblocks_8.02-0ubuntu1_i386.deb
-codeblocks-contrib_8.02-0ubuntu1_i386.deb
-codeblocks-dbg_8.02-0ubuntu1_i386.deb
-
-3）安装完成后在应用程序－编程下即可启动。
 *--- Ubuntu下安装GTK+ ---2008年10月10日 | 10:56:39
 apt-get install build-essential #这将安装gcc/g++/gdb/make 等基本编程工具
 apt-get install gnome-core-devel #这将安装 libgtk2.0-dev libglib2.0-dev 等开发相关的库文件
