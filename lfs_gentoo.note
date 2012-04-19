@@ -1,4 +1,10 @@
 ----------SuiJinXin LFS and Gentoo Notes		-*- outline -*-
+* Gentoo中禁止升级某个文件包--2012年04月19日 14:47:26 
+$ cat /etc/portage/profile/package.provided    
+media-fonts/arphicfonts-0.2.20080216.1  
+media-fonts/baekmuk-fonts-2.2-r2
+
+注意需要带版本号
 * Gentoo升级Xorg后进入X系统鼠标键盘不好使 --2011年12月25日 13:50:52 
 作为合格的gentoo用户，首先要做到注意升级后的提示信息。
 ** 运行如下命令：
