@@ -1,4 +1,19 @@
 				SuiJinXin Emacs Notes		-*- outline -*-
+* Emacs24中使用nXhtml报错的问题 --2012年04月21日 10:30:05 
+问题：
+Warning: `font-lock-beginning-of-syntax-function' is an obsolete variable (as of Emacs 23.3); use `syntax-begin-function' instead.
+Warning: `font-lock-syntactic-keywords' is an obsolete variable (as of Emacs
+24.1); use `syntax-propertize-function' instead.
+解决方案：
+(setq mumamo-background-colors nil)   
+  
+(eval-after-load "bytecomp"  
+  '(add-to-list 'byte-compile-not-obsolete-vars   
+                'font-lock-beginning-of-syntax-function))   
+(eval-after-load "bytecomp"  
+  '(add-to-list 'byte-compile-not-obsolete-vars   
+              'font-lock-syntactic-keywords)) 
+
 * 以Emacs的色彩风格输出代码的html页面 --2011年09月14日 17:45:35  
 经常要贴自己的代码给别人看，自然，就非常希望让别人看到自己在Emacs中精心配置好的颜色、代码风格，以便于阅读、理解代码。不过，这似乎有点难度。现在好了，用上htmlize.el这个扩展，就可以把代码当前的颜色、代码风格，直接转化为html页面。这样，别人看起来会舒服很多，当别人认为你的代码有用的时候，再叫你拿txt文件也不迟。
 
