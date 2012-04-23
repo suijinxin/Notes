@@ -1,0 +1,231 @@
+#+TITLE:    Notes on Web Technology
+#+AUTHOR:   Suijinxin
+#+EMAIL:    suijinxin@gmail.com
+#+STARTUP:  showall
+* html xhtml css 基础教程笔记 --2012年04月23日 13:45:12 
+** charpter 3-基本的（X)HTML结构
+*** 声明编码：
+<head>
+<meta http-equiv="content-type" content="text/html"; charset=utf-8" />
+</head>
+*** 创建新段落： 
+<p> </p>
+*** 换行： 
+ <br /> 没有但如的br结束标记
+*** 给元素命名
+e.g.:  gaudi唯一的标识这个元素
+   <h2 id="gaudi">  </h2>
+ 在元素的开始标识中，输入class="name",这里的name标识类名。
+   <h2 class="building"> </h2>
+*** 把页面分隔成区域
+<div></div>
+*** 创建行内span
+<span> </span>
+*** 添加注释
+<!-- -->
+*** Tips：
+  一个(X)HTML文档中的每个id必须是唯一的。换句话说，两个元素不能用同一个id来命名。
+  多个元素可以同属于一个类，因此可以标上相同的类名。
+  class和id属性可以添加到大多数(X)HTML元素中，但对于div和span元素尤其有用。
+  id属性会自动地将元素转换成锚(?) 可以让链接指向这个位置。
+  最后，id属性还可以用来标识那些将受到脚本语言（比如JavaScript)影响的元素。
+** charpter 4-基本(X)HTML格式化
+*** 以粗体或者斜体显示文本
+粗体： <b> balabal </b>
+斜体：<i> balabala </i>
+*** 修改问题大小
+<big> balabala </big>
+<small> balabala </small>
+尽管还没有废弃以上两个标记，但最好使用CSS来控制文本的大小。
+*** 使用等宽字体
+<code></code>
+<tt></tt>
+<kbd></kbd>
+<samp></samp>
+使用系统设置的等宽字体显示。
+  也可以用CSS对文本应用任何字体，只要访问者的系统上安装了这种字体。
+*** 使用预格式化的文本
+预格式化的文本能够保持原来的换行的文本中插入的空白。这对于显示计算机代码示例是非
+常合适的。
+<pre>
+</pre>
+*** 引述文本
+--引述块级文本：
+<blockquote>开始一个块级引述。
+如果愿意，输入cite="url",这里的url是引述来源的地址。
+<blockquote cite="url"> 
+输入有别于前后文本的内容。包括需要的任何(X)HTML标记。
+</blockquote>
+
+--引述行内文本：
+<q>开始引述
+如果愿意，也可以输入 <q lang="xx">
+输入要引述的文本
+</q>
+
+文本和行内元素不应该直接放在blockquote开始和结束标记之间，而是应该将文本和行内元
+素包围在一个块级标记中（比如p标记），然后将这个块级标记放在blockquote标记中。
+
+xml:lang 和 lang属性的一些细节。
+*** 创建上标和下标
+创建上标：
+<sup></sup>  
+创建下标：
+</sub></sub>
+
+注意：sub和sup元素会扰乱行间距。
+*** 标出修改过的文本
+1、标出刚插入的文本：
+<ins> balabalabala </ins>
+一般是文本下显示下划线
+2、标出已经删除的文本：
+<del>balabalabala</del>
+一般是文本上显示删除线。
+*** 解释缩写词
+输入<abbr。如果缩写词可以独坐一个单词，那么输入<acronym。
+接下来输入title="explanation",这里的explanation是对缩写词的详细解释。
+>
+然手输入缩写词本身。
+</abbr> 或者 </acronym>
+<abbr title="Lyndon Baynes Johnson">LBJ</abbr>
+
+<acronym title="Light Amplification By Stimulated Emission of
+Radiation">laser</acronym>
+*** 让元素在页面上居中
+<center>
+穿件希望居中显示的元素
+</center>
+
+Tips:
+①center元素相当于<div aligh="center">...</div>的简写形势(align元素已废弃)
+②如果使用center元素，那么应该确保声明一个过渡型的DOCTYPE
+** 图像
+*** 在页面上插入图像
+<img src="imag.url" />
+注意, /> 前面有空格。
+
+*** 提供替换文本
+在不显示图像时提供替换文本：
+<img src="cornermarket.jpg" alt="没显示时将显示的文字" />
+通过在img标记上应用样式，可以用不同的字体和字号对替换文本进行格式化。
+*** 指定尺寸快速查看
+<img src="tomatoes.jpg" width="300" height="225" alt="Tomatoes" />
+*** 让图像浮动
+效果为文字围绕图像。
+
+align 可以取"right"或者"left"
+<img src="image.jpg align="right" alt="house" width="237" height="225" />
+
+align属性已经废弃。但这是一个有用的技巧。如果使用严格行的(X)HTML，那么应该使用
+CSS 的float属性。
+
+注意：关键是每个图像直接放在应该围绕它的文本前面。
+
+*** 停止元素围绕
+<br clear="right" />
+或者
+<br clear="all" />
+
+CSS 的 clear属性更直接的影响浮动元素本身。
+*** 在图像周围增加空间
+*** 对齐图像
+CSS 有更强大的解决方案。
+
+*** 添加水平线
+
+<hr />
+hr的所有属性都废弃了，但hr本身没有废弃。W3C建议使用CSS来控制水平线。
+
+在CSS中没有与noshade等效的东西。一个解决方案是省略掉水平线。只应用边框。
+*** 为网站添加图标
+这些图标称为favicon。也是收藏夹图标的简称。
+1、创建一个16*16像素的图像
+2、在(X)HTML文档的头部，输入：
+<link rel="icon" href="favicon.ico" type="image/x-icon" />
+上面的favicon.ico是图标在服务器上的名称和位置。
+3、如果为了与微软兼容，还要添加微软的专有语法：
+<link rel="shortut icon" href="favicon.ico" type="image/x-icon" />
+
+Tips:
+①收藏夹图标一般保存成.ico格式。
+②一些浏览器(不包括IE)还支持GIF（包括动画gif）和PNG格式的收藏夹图标。一定要在type
+属性中使用正确的MIME类型。
+** charpter 06-链接
+
+*** 6.1创建到另一个网页的链接
+<a href="http://www.hit.edu.cn"> </a>
+<a href="http://www.hit.edu.cn">哈尔滨工业大学主页</a>
+Tips:
+①url最好全部使用小写字母。
+②href代表超文本引用(hypertext reference)。
+③要创建到页面上特定位置的链接，应该使用锚。
+④a元素可以包含出了另一个a元素之外的任何类型的行内元素。但它不能包含块级元素。
+*** 6.2创建锚
+步骤如下：
+1、将光标放在页面中希望用户跳到的部分。
+2、输入<a name="anchor name">，这里anchor name实在内部用来标识这部分网页的文本。
+3、添加希望引用的单词或图像。
+4、输入</a>结束锚的定义。
+*** 6.3链接到特定的锚
+1、<a href="#anchor name">， 这里的anchor name 是目标a标记中的name属性。或者是目标
+的id属性值。
+2、输入标签文本，也就是突出显示的文本。访问者点击它是就会转到上一步中引用的文档
+部分。
+3、输入</a>结束链接的定义。
+
+Tips:
+①如果锚在另一个文档中，那么使用：
+<a href="page.html#anchor name">
+来引用文档部分(在URL和#之间不应该有空格)。
+如果锚在另一个服务器上的页面中，那么必须输入：
+<a href="http://www.site.com/path/page.html#anchor name">（没有空格）。
+②如果锚在页面的底部，那么它可能不显示在窗口的顶部，而是在中间显示。
+*** 6.4让链接在特定的窗口中打开(暂略)
+*** 6.5设置默认的显示目标
+《base garget="characters" />
+Tips：
+①使用base标记设置默认显示目标(如上面的characters窗口)可以减少代码输入量。
+②显示目标名称是大小写敏感的。
+③base标记是严格型(X)HTML的一部分，但target属性不是。
+④还可以使用base标记设置构建相对URL所需的基础URL。如果cgi-bin目录中的PerCGI脚本
+生成(X)HTML页面，而且你希望引用服务器主要部分中的大量图像或链接，那么这种技术就
+非常有用。使用
+<base href="base.url" />，
+这里的base.url是所有相对链接应该参照的基础URL。在由脚本生成页面时，这个URL反应生
+成的(X)HTML页面的虚拟位置。
+*** 6.6创建其它类型的链接（暂略）
+*** 6.7为链接创建键盘快捷键
+在链接的标记中，输入accesskey="键盘快捷键"
+e.g：
+<a href="gatetseng.html#woody" accesskey="w"><Woody</a>(Alt-W,Ctrl-W)
+Tips：
+①firefox和mac的IE上，输入键盘快捷键就会激活链接。但windows的IE上只是焦点切换过
+去了，还需单独按一下回车。
+②Windows上调用键盘快捷键需要用Alt+设置的字母，在Mac系统上，需用Control+字母访问。
+③设置的键盘快捷键覆盖浏览器的快捷键。比如Alt+f在浏览器中是访问文件菜单。如果设
+置了此快捷键，那么访问浏览器功能则失效。
+*** 6.8为链接设置表符次序
+tabindex="n"
+n是用来设置制表符次序的数字。0——32767之间。
+Tips：
+①在改变制表符次序是，数字最小的元素首先激活。
+②还可以将制表符次序分配给客户端图像映射和表单元素。
+*** 6.9使用图像作为链接标签
+<a href="firstpage.html">
+<img src="rewind.gif" alt="First page" border="0"/>
+</a>
+*** 6.10将缩略图链接到图像
+
+<a href="flowers.jpg">
+<img src="flowers_little.jap" alt="Flowers on the Rambles"
+width="83" height="125" />
+</a>
+
+Tisps：
+①使用缩小版本（即缩略图）是在页面上提供大量图形信息，同事避免访问者长时间等待的
+好方法。如果访问者有兴趣，可以选择查看全尺寸图像。
+②使用CSS可以有其它的替代方案。
+*** 6.11 将图像划分成可点击区域
+首先，必须在图像上划分出不同的区域；
+其次，必须定义哪个目标与图像的哪个区域对应。
+*** 6.12创建客户端图像映射
