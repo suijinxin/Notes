@@ -3,7 +3,7 @@
 #+EMAIL:    suijinxin@gmail.com
 #+STARTUP:  showall
 * html xhtml css 基础教程笔记 --2012年04月23日 13:45:12 
-** charpter 3-基本的（X)HTML结构
+** chapter 3-基本的（X)HTML结构
 *** 声明编码：
 <head>
 <meta http-equiv="content-type" content="text/html"; charset=utf-8" />
@@ -29,7 +29,7 @@ e.g.:  gaudi唯一的标识这个元素
   class和id属性可以添加到大多数(X)HTML元素中，但对于div和span元素尤其有用。
   id属性会自动地将元素转换成锚(?) 可以让链接指向这个位置。
   最后，id属性还可以用来标识那些将受到脚本语言（比如JavaScript)影响的元素。
-** charpter 4-基本(X)HTML格式化
+** chapter 4-基本(X)HTML格式化
 *** 以粗体或者斜体显示文本
 粗体： <b> balabal </b>
 斜体：<i> balabala </i>
@@ -99,7 +99,7 @@ Radiation">laser</acronym>
 Tips:
 ①center元素相当于<div aligh="center">...</div>的简写形势(align元素已废弃)
 ②如果使用center元素，那么应该确保声明一个过渡型的DOCTYPE
-** 图像
+** chapter 05-图像
 *** 在页面上插入图像
 <img src="imag.url" />
 注意, /> 前面有空格。
@@ -150,7 +150,7 @@ Tips:
 ①收藏夹图标一般保存成.ico格式。
 ②一些浏览器(不包括IE)还支持GIF（包括动画gif）和PNG格式的收藏夹图标。一定要在type
 属性中使用正确的MIME类型。
-** charpter 06-链接
+** chapter 06-链接
 
 *** 6.1创建到另一个网页的链接
 <a href="http://www.hit.edu.cn"> </a>
@@ -229,3 +229,145 @@ Tisps：
 首先，必须在图像上划分出不同的区域；
 其次，必须定义哪个目标与图像的哪个区域对应。
 *** 6.12创建客户端图像映射
+<map name="banner" id="banner">
+
+<area alt="new information" shape="rect" coords="395,18,445,35"
+href="newinfo.html" />
+
+<area alt="press releases" shape="rect"
+coords="395,38,445,55"
+href="pressrelease.html" />
+</map>
+** chapter 07-CSS构造块
+*** 构造样式规则
+选择器(selector)--其决定哪些元素要收到影响
+声明（declaration）--有一个或者多个属性/值对组成，指定了应该做什么
+
+h1    {color: red;}
+^        ^     ^
+|        |     |
+选择器   属性    值
+
+h1 {color: red;
+    background: yellow;}
+两组属性/值对
+*** 在样式规则中添加注释
+/* Images will have a solid red 4 pixel border */
+img {border: 4px solid red}
+*** 层叠：当规则发生冲突时
+在没有规则时，许多样式从父元素继承到子元素。当两个规则冲突时，规则越特殊，它的优
+先级（即重要性）就越高——不管它的位置在哪里。当两个规则的特殊性相同时，晚出现的规
+则优先。
+
+“继承性”决定了在一个元素上没有应用样式规则是会怎么样。
+“特殊性”决定了在应用多个规则是会怎么样--选择器越特殊，规则就越强。
+
+*** 属性的值
+inherit--对于任何属性，如果希望显式地指出该属性与元素的父元素的属性相同，那么可
+以使用inherit值。
+
+预定义的值--大多数CSS属性有几个可以使用的预定义值。
+
+长度和百分数--许多CSS属性以长度作为值。所有长度值必须包含数字和单位，它们之间没
+有空白。 e.g: 3em 或者 10px。 唯一的例外是0，单位可有可无。
+
+纯数字--很少几个CSS属性接收不带单位的数字值。如line-height何z-index。
+
+URL--一些CSS属性允许指定另一个文件的URL。 在单词URL和前括号之间不应该有空格。括
+号和地址之间允许有空格（也可以没有）。
+*** CSS颜色
+有几种。
+1、使用十六种预定义颜色名。
+2、可以通过指定所需颜色的红绿蓝成分来自己构造颜色。，可以使用百分数、0——255之间
+   的数字或者十六进制数字来指定红绿蓝成分。
+   例如：深紫色，可以使用35%的红色和50%的蓝色，这个颜色就写作：
+   rgb(35%, 0%, 50%)
+3、数字：
+   rgb(89, 0, 127)  （255的35%约等于89，以此类推）
+
+4、十六进制法：
+  将这些数字转换为十六进制，然后将它们合并在一起，并且在前面加上#：
+  #59007F  (59和7F是89和127的十六进制表示。00表示0)
+  当十六进制由三对重复的数字组成时，比如#ff3344,可以缩写为#f34。
+** chapter 08-操作CSS样式表文件
+*** 1、创建外部样式表
+正常编辑即可 扩展名.css。
+
+如果CSS文件中含有非ASCⅡ字符，那么应该再第一行用 @charset "encoding";声明字符编
+码。
+*** 2、链接外部样式表
+<html>
+<head>
+
+<link rel="stylesheet" type="text/css"
+href="base.css" />
+
+</head>
+</html>
+在<head>中间声明。
+
+可以同时链接几个样式表，靠后的样式表优先于靠前的样式表。
+通过设置media属性，可以将样式表限制在特定类型的输出上，详见8.6节。
+*** 3、提供替代的样式表
+<link rel="stylesheet" type="text/css" href="base.css" />
+<link rel="stylesheet" type="text/css"
+href="preferred.css" title="Dashed" />
+
+<link rel="alternate stylesheet" type="text/css" 
+href="alternate.css" title="Dotted" />
+*** 4、创建内部样式表
+在head部分中
+<style type="text/css">
+相关规则
+</style>
+*** 5、导入外部样式表
+在head中：
+<style>
+@import "not_for_Netscape4.css";
+</style>
+
+应将其放在style元素中的任何其它样式规则前，而其不要忘记分号。
+导入的CSS规则优先于在这个@import规则前出现的任何规则。
+可以在外部CSS中使用@import规则。
+可以将导入的规则CSS限制于特定的输出。
+*** 6、使用与媒体相关的样式表
+<link rel="stylesheet" type="text/css"
+href="printstyles.css" media="print" />
+
+可以指定一个CSS只用于特定的输出。比如只用于打印或者手持设备。
+media="output"  output包括print、screen、handheld或all。
+
+<style>
+@import "screenstyles.css" screen;
+@import "printstyles.css" print;
+</style>
+
+media默认的属性值是all
+有10中可能输出的类型：all aural braille embossed handheld print
+projection screen tty 和tv。浏览器对它们的支持程度各不相同。
+*** 7、局部应用样式
+简单实验用，见效快
+1、在希望进行格式化的(X)HTML标记中，输入style="。
+2、创建一个样式规则，但是不带花括号和选择器。不需要选择器是因为样式直接放在了目
+标元素中。
+3、要想创建其它样式定义，应该输入分号，并且重复第2步。
+4、输入后引号"。
+e.g:
+<img src="palau250.jpg" alt="El Palau de la M sica" width="250"
+height="163" style="border:4px solid red" align="left" />
+*** 8、位置的重要性
+基本规则是：在其它情况都相同时，越晚出现的样式越有限，或者说越重要。
+<style> img {border: dashed} </style>
+<link rel="stylesheet" type="text/css" href="base.css" />
+*** 9、借鉴他人的灵感
+** chapter 09-定义选择器
+
+** chapter 17 表单
+*** 1、创建表单
+<form method="POST"
+action="script.url">
+创建表单内容，包括提交按钮或活动图像
+</form>
+
+其中script.url是在提交表单时运行的脚本在服务器上的位置。
+例如：action="showform.php"
