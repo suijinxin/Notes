@@ -2,7 +2,7 @@
 #+AUTHOR:   Suijinxin
 #+EMAIL:    suijinxin@gmail.com
 #+STARTUP:  showall
-* html xhtml css 基础教程笔记 --2012年04月23日 13:45:12 
+* Html Xhtml&CSS 基础教程笔记 --2012年04月23日 13:45:12 
 ** charpter 3-基本的（X)HTML结构
 *** 声明编码：
 <head>
