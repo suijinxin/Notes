@@ -1,4 +1,22 @@
 ﻿				SuiJinXin basic knowledge of linux Notes	  	-*- outline -*-
+* texlive安装过程   2012年04月28日 | 16:43:20
+1、下载光盘镜像，mount
+mount -t iso9660 -o ro,loop,noauto /opt/texlive2010.iso /mnt
+2、安装
+如果以前装过
+rm -rf /usr/local/texlive/2010
+rm -rf ~/.texlive2010
+然后进入texlive目录
+sudo ./install-tl  字符方式
+sudo ./install-tl -gui perltk 图形方式，需apt-get install perl-tk
+3、配置
+在/etc/profile中加入路径：
+PATH=/usr/local/texlive/2010/bin/x86_64-linux:$PATH
+4、升级
+tlmgr	option	repository		http://mirror.bjtu.edu.cn/CTAN/system/texlive/tlnet
+tlmgr update --list
+tlmgr update --all
+tlmgr show pkgname
 * 两台机器之间传送文件 --2011年07月12日 17:02:06 
 
 如果要把 A上的 /root/abc.zip 传到 B机并放到/abc目录，可以在A机上用命令

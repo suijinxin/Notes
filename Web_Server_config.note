@@ -1,4 +1,11 @@
 				SuiJinXin basic knowledge of Web_Server_config Notes	-*- outline -*-
+* Apache errorlog 提示如下   --2011年04月16日 19:19:09 
+[Sat Apr 16 17:09:36 2011] [error] (OS 10038)在一个非套接字上尝试了一个操作。  : Child 3776: Encountered too many errors accepting client connections. Possible causes: dynamic address renewal, or incompatible VPN or firewall software. Try using the Win32DisableAcceptEx directive.
+** 解决方案：windows
+
+cmd下输入：
+netsh winsock reset
+
 * Tomcat7.0添加用户 --2011年04月 8日 15:57:10 
 <tomcat-users>
 <role rolename="admin-gui,manager-gui">
