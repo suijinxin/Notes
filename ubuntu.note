@@ -11,6 +11,33 @@ sudo vim /etc/NetworkManager/NetworkManager.conf
 将
 managed=false 修改为：
 managed=true
+*---Ubuntu系统添加应用程序快捷方式 --2011年06月28日 | 15:13:57
+  假设我要添加快捷方式的应用程序名为APPNAME，应用程序装在目录APPDIR下，可执行程序在BINDIR下，可执行程序名为BINNAME（多数情况下BINNAME和APPNAME可以是相同的，注意区分大小写），应用程序图标位于目录ICONDIR下，其文件名为ICONNAME。Applications菜单栏下的应用程序快捷方式是按类别（Category）分组放置的，比如说聊天工具放在Network这类下，而文字处理工具word放在Office这类下，假设我们要添加快捷方式的应用程序的类别是CATEGORYNAME，则添加快捷方式有如下步骤：
+** 1、sudo gedit /usr/share/applications/APPNAME.desktop
+
+** 2、输入如下配置内容
+[Desktop Entry]
+Name=APPNAME
+Comment=一串对该应用程序的文字说明（当鼠标悬浮在添加在Applications菜单栏下的应用程序快捷方式上时，会有浮动文字框显示这段文字说明）
+Exec=BINDIR/BINNAME
+Icon=LOGODIR/ICONNAME
+Terminal=false
+Type=Application
+Categories=Application;CATEGORYNAME;
+** 3、举例：
+新安装了Eclipse在文件夹/opt/eclipse下，在该目录下有应用程序可执行文件名为eclipse和应用程序图标icon.xpm，则上文中所述的
+APPNAME=Eclipse  APPDIR=/opt/eclipse/   BINDIR=/opt/eclipse/   BNINAME=eclipse   ICONDIR=/opt/eclipse/   ICONNAME＝icon.xpm
+我将其放在Developmen类下，则CATEGORYNAME=Development
+应用程序文字说明我设成“An Integrated IDE for Java/C++/Web Developers under Gnome”
+结合到一块儿，/usr/share/applications/eclipse.desktop文件中的配置内容应该是这样的
+[Desktop Entry]
+Name=Eclipse
+Comment=An Integrated IDE for Java/C++/Web Developers under Gnome
+Exec=/opt/eclipse/eclipse
+Icon=/opt/eclipse/icon.xpm
+Terminal=false
+Type=Application
+Categories=Application;Development;
 *---修改时区和时间---2011年06月 4日 18:18:23 
 执行
 $sudo tzselect

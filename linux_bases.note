@@ -1,4 +1,5 @@
 ﻿				SuiJinXin basic knowledge of linux Notes	  	-*- outline -*-
+* 
 * 两台机器之间传送文件 --2011年07月12日 17:02:06 
 
 如果要把 A上的 /root/abc.zip 传到 B机并放到/abc目录，可以在A机上用命令
