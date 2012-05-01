@@ -1,4 +1,5 @@
 ﻿				SuiJinXin basic knowledge of linux Notes	  	-*- outline -*-
+<<<<<<< HEAD
 * texlive安装过程   2012年04月28日 | 16:43:20
 1、下载光盘镜像，mount
 mount -t iso9660 -o ro,loop,noauto /opt/texlive2010.iso /mnt
@@ -17,6 +18,9 @@ tlmgr	option	repository		http://mirror.bjtu.edu.cn/CTAN/system/texlive/tlnet
 tlmgr update --list
 tlmgr update --all
 tlmgr show pkgname
+=======
+* 
+>>>>>>> ca64af53b701da28087a729e10e79b3f28272b43
 * 两台机器之间传送文件 --2011年07月12日 17:02:06 
 
 如果要把 A上的 /root/abc.zip 传到 B机并放到/abc目录，可以在A机上用命令
