@@ -1,4 +1,10 @@
 				SuiJinXin Emacs Notes		-*- outline -*-
+* Emacs中安装el文件的默认路径 --2012年05月17日 10:56:26 
+e.g.:  in ubuntu 12.04 LTS
+apt-get install cscope-el
+it will be install to:
+
+/usr/share/emacs23/site-lisp/cscope/xcscope.elc
 * Emacs24中使用nXhtml报错的问题 --2012年04月21日 10:30:05 
 问题：
 Warning: `font-lock-beginning-of-syntax-function' is an obsolete variable (as of Emacs 23.3); use `syntax-begin-function' instead.
